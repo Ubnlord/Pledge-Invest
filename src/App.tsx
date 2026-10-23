@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode, type FormEvent } from 'react';
 import { api, auth, notifications } from './lib/platform';
 import Profile from './Profile';
 import TradingViewTicker from './TradingViewTicker';
@@ -69,14 +69,14 @@ function AuthPage({onSuccess}:{onSuccess:()=>Promise<void>}) {
   const [country,setCountry]=useState('');
   const [referralCode,setReferralCode]=useState(()=>{try{return new URLSearchParams(window.location.search).get('ref')||localStorage.getItem('pledge_ref_code')||'';}catch{return '';}});
   const [confirmPassword,setConfirmPassword]=useState('');
-  const submit=async(e:React.FormEvent)=>{e.preventDefault();setError('');setMessage('');
+  const submit=async(e:FormEvent)=>{e.preventDefault();setError('');setMessage('');
     if(mode==='signup'&&password!==confirmPassword){setError('Passwords do not match.');return;}
     if(mode==='signup'&&password.length<8){setError('Use a password with at least 8 characters.');return;}
     setLoading(true);
     try {
       if(mode==='signin'){await auth.signIn(email,password);await onSuccess();}
       else {
-        const result=await auth.signUp({email,password,username,fullName,phone,country,referralCode});
+        if(referralCode)try{localStorage.setItem('pledge_ref_code',referralCode.trim().toUpperCase());}catch{} const result=await auth.signUp({email,password,username,fullName,phone,country,referralCode});
         if(result.session){if(referralCode)try{localStorage.setItem('pledge_ref_code',referralCode.trim().toUpperCase());}catch{} await onSuccess();}
         else {setMessage('Account created. Check your email for the confirmation link, then return here to sign in.');setMode('signin');setPassword('');setConfirmPassword('');}
       }
