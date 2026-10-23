@@ -268,3 +268,33 @@ a[class~="bg-emerald-400"] {
 
 [class~="bg-stone-50"] { background-color: var(--color-bg) !important; }
 [class*="border-stone-"] { border-color: var(--color-border-light) !important; }
+
+/* Legacy solid brand fills and logos now use the burgundy primary. */
+[class~="bg-black"],
+[class~="bg-emerald-400"],
+[class~="bg-emerald-500"],
+[class~="bg-emerald-600"],
+[class~="bg-indigo-400"],
+[class~="bg-indigo-500"],
+[class~="bg-indigo-600"],
+[class~="bg-blue-400"],
+[class~="bg-blue-500"],
+[class~="bg-blue-600"],
+[class~="bg-cyan-400"],
+[class~="bg-cyan-500"],
+[class~="bg-violet-500"],
+[class~="bg-purple-500"] {
+  background-color: var(--color-primary) !important;
+}
+[class~="text-[#05251f]"] { color: var(--color-text) !important; }
+[class*="bg-emerald-400/"],
+[class*="bg-emerald-500/"],
+[class*="bg-indigo-400/"],
+[class*="bg-indigo-500/"],
+[class*="bg-cyan-400/"],
+[class*="bg-blue-400/"] {
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent) !important;
+}
+[class*="text-[#"] {
+  color: var(--color-text) !important;
+}
