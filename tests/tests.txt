@@ -1,76 +1,23 @@
-# Tests
+# Supabase migration smoke tests
 
-## Test 1 - Admin edits and deletes a persistent investor record [sanity]
-Viewport: desktop
-Covers: protected admin authentication, GET /api/admin/users, GET /api/admin/users/:id, PUT /api/admin/users/:id, DELETE /api/admin/users/:id, persistent user CRUD, shared investor ledger
-Description: Verifies administrator edits and deletes the same persistent investor records used by the Pledge Invest portal.
+Run these after configuring Supabase Auth providers and Edge Function secrets.
 
-Setup:
-1. Create an investor account through the Pledge Invest sign-up flow
+## Public API
+- GET /api/_healthcheck returns { "message": "Success" }.
+- GET /api/public/market returns market data or a clear upstream error.
+- GET /api/public/deposit-settings returns the current public settings.
 
-Steps:
-1. Open the administrator portal and authenticate with the authorized administrator account
-2. Open Users
-3. Select Edit for the seeded investor
-4. Change the investor name, email and status
-5. Select Save Changes
-6. Refresh the Users section
-7. Verify the edited values remain
-8. Select Delete and confirm the deletion
-9. Refresh the Users section
+## Authentication
+- Unauthenticated GET /api/me/summary returns 401.
+- A valid Supabase-authenticated investor can load /api/me/summary and /api/profile.
+- A non-admin authenticated user gets 403 from /api/admin/overview.
+- The allowlisted admin must pass both Supabase authentication and the server-side PLEDGE_ADMIN_AUTH_CODE check.
 
-Expected: The edited investor values persist after refresh, and the confirmed deletion removes the same investor record from the Users list.
+## Ledger
+- Investor account and transactions are stored in Supabase public.pledge_records through the Edge Function.
+- Deposit requests do not credit a balance until admin approval.
+- Test deposit approval, wallet credit, withdrawals, referral rewards, and profit accrual only with test accounts.
+- Verify that account and shared investor records stay in sync.
 
-## Test 2 - Switch from an existing investor session to the administrator account
-Viewport: mobile
-Covers: AppDeploy auth identity switching, Change account action, administrator email allowlist, protected admin login
-Description: Verifies a user who is already signed in as a non-admin account can explicitly switch accounts instead of being trapped by the existing identity.
-
-Steps:
-1. Open the administrator portal while already signed in as a non-administrator investor account
-2. Verify the current signed-in email and the required administrator email are both visible
-3. Select Use a different account
-4. Complete AppDeploy authentication with the authorized administrator account
-5. Enter the administrator authentication code
-
-Expected: The previous investor identity is cleared, the administrator account can be selected, and the administrator portal opens after the valid code is accepted.
-
-## Test 3 - Investor account and admin record stay connected
-Viewport: desktop
-Covers: authenticated investor identity, shared pledge_investors record, admin-visible investor balance and profile fields
-Description: Verifies the investor portal and administrator panel reference the same account record.
-
-Steps:
-1. Sign in as an investor
-2. Open the investor profile and note the investor ID and account status
-3. Open the administrator portal as an administrator
-4. Open Users and locate the same investor ID
-
-Expected: The administrator sees the same investor ID and current account status for the authenticated investor.
-
-## Test 4 - Admin user CRUD is denied without administrator authentication
-Viewport: mobile
-Covers: AppDeploy sign-in, administrator email allowlist, admin authentication guard, unauthorized GET/PUT/DELETE behavior, protected management actions
-Description: Verifies the administrator portal requires the authorized AppDeploy identity and administrator code before protected user management is available.
-
-Steps:
-1. Open the administrator portal while signed out
-2. Select the administrator sign-in action and complete AppDeploy authentication with the authorized administrator account
-3. Enter the administrator authentication code
-4. Open Users and verify management controls appear
-
-Expected: The portal does not expose protected management controls until both the authorized administrator identity and valid administrator code have been accepted.
-
-## Test 5 - Wallet credit remains connected to the edited investor
-Viewport: mobile
-Covers: POST /api/admin/investors/:id/credit, shared ledger synchronization, wallet persistence
-Description: Verifies an administrator wallet credit is applied to the same persistent investor record selected in Users.
-
-Steps:
-1. Authenticate as administrator
-2. Open Users
-3. Select an investor and credit a positive wallet amount
-4. Refresh Users
-5. Sign in as that investor
-
-Expected: The credited balance remains associated with the selected investor account and is visible in the investor wallet.
+## Known migration requirement
+Existing AppDeploy data has not been imported. Do not use financial controls against real balances until the legacy records have been exported/imported and reconciled.
