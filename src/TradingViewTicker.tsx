@@ -41,7 +41,7 @@ export default function TradingViewTicker({ theme = 'light' }: { theme?: 'dark' 
   }, [theme]);
 
   return (
-    <div className="w-full border-b border-stone-300 bg-[#FAFAF9]">
+    <div className="w-full border-b border-stone-300 bg-stone-50">
       <div className="tradingview-widget-container" ref={containerRef} />
     </div>
   );
