@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { api } from '@appdeploy/client';
+import { api } from './lib/platform';
 import { Camera, CheckCircle2, Lock, Save, ShieldCheck, UserRound, X } from 'lucide-react';
 
 type ProfileData = {
