@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 /** Scrolling live market tape powered by TradingView (shown on every page). */
-export default function TradingViewTicker({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
+export default function TradingViewTicker({ theme = 'light' }: { theme?: 'dark' | 'light' }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function TradingViewTicker({ theme = 'dark' }: { theme?: 'dark' |
   }, [theme]);
 
   return (
-    <div className="w-full border-b border-slate-800 bg-[#131722]">
+    <div className="w-full border-b border-stone-300 bg-[#FAFAF9]">
       <div className="tradingview-widget-container" ref={containerRef} />
     </div>
   );
