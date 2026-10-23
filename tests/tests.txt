@@ -20,4 +20,4 @@ Run these after configuring Supabase Auth providers and Edge Function secrets.
 - Verify that account and shared investor records stay in sync.
 
 ## Known migration requirement
-Existing AppDeploy data has not been imported. Do not use financial controls against real balances until the legacy records have been exported/imported and reconciled.
+Existing legacy data has not been imported. Do not use financial controls against real balances until the legacy records have been exported/imported and reconciled.
