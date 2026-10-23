@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { api, auth, notifications } from '@appdeploy/client';
+import { api, auth, notifications } from './lib/platform';
 import Profile from './Profile';
 import TradingViewTicker from './TradingViewTicker';
 import { ArrowUpFromLine, BarChart3, Bell, Check, CircleDollarSign, Copy, CreditCard, FileText, Gift, Headphones, Home, LineChart, LogOut, Menu, PieChart, Plus, RefreshCw, Search, Send, Settings, ShieldCheck, TrendingUp, User, Users, Wallet, X } from 'lucide-react';
