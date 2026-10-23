@@ -265,3 +265,6 @@ a[class~="bg-emerald-500"],
 a[class~="bg-emerald-400"] {
   color: var(--color-white) !important;
 }
+
+[class~="bg-stone-50"] { background-color: var(--color-bg) !important; }
+[class*="border-stone-"] { border-color: var(--color-border-light) !important; }
