@@ -252,3 +252,16 @@ a[class*="bg-emerald-"] [class~="text-white"] {
 [class~="text-gray-800"] {
   color: var(--color-text) !important;
 }
+
+button[class~="bg-indigo-600"],
+button[class~="bg-indigo-500"],
+button[class~="bg-emerald-600"],
+button[class~="bg-emerald-500"],
+button[class~="bg-emerald-400"],
+button[class~="bg-blue-600"],
+button[class~="bg-cyan-500"],
+a[class~="bg-indigo-600"],
+a[class~="bg-emerald-500"],
+a[class~="bg-emerald-400"] {
+  color: var(--color-white) !important;
+}
