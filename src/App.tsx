@@ -88,8 +88,8 @@ function HomePage({onAuth}:{onAuth:(mode:'signin'|'signup')=>void}) {
  </div>;
 }
 
-function AuthPage({onSuccess}:{onSuccess:()=>Promise<void>}) {
-  const [mode,setMode]=useState<'signin'|'signup'>('signin');
+function AuthPage({onSuccess,onHome,initialMode}:{onSuccess:()=>Promise<void>;onHome:()=>void;initialMode:'signin'|'signup'}) {
+  const [mode,setMode]=useState<'signin'|'signup'>(initialMode);
   const [showPassword,setShowPassword]=useState(false);
   const [remember,setRemember]=useState(true);
   const [loading,setLoading]=useState(false);
@@ -121,7 +121,7 @@ function AuthPage({onSuccess}:{onSuccess:()=>Promise<void>}) {
   const input="w-full rounded-xl border border-slate-700 bg-[#18304a] px-4 py-3.5 text-sm text-white placeholder:text-slate-400 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20";
   const label="mb-2 block text-sm font-medium text-slate-300";
   return <div className="min-h-screen bg-[#071426] px-4 py-5 text-white sm:py-10">
-    <div className="mx-auto flex w-full max-w-xl justify-end rounded-2xl border border-slate-700/70 bg-[#10233a] p-1.5">
+    <div className="mx-auto flex w-full max-w-xl items-center justify-between gap-3 rounded-2xl border border-slate-700/70 bg-[#10233a] p-1.5"><button type="button" onClick={onHome} className="rounded-xl px-4 py-3 text-sm font-bold text-slate-300">← Home</button>
       <button type="button" onClick={()=>{setMode(mode==='signin'?'signup':'signin');setError('');setMessage('');}} className="w-full rounded-xl bg-[#18304a] px-4 py-3 text-sm font-bold text-white">{mode==='signin'?'Open Account':'Sign In'}</button>
     </div>
     <main className="mx-auto mt-8 w-full max-w-xl rounded-[28px] border border-slate-700/80 bg-[#10213a] p-5 shadow-2xl shadow-black/20 sm:mt-12 sm:p-9">
