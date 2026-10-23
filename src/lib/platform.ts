@@ -42,13 +42,33 @@ export const auth = {
     if (error && error.message !== 'Auth session missing!') throw error;
     return normalizeUser(data?.user);
   },
-  async signIn() {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: window.location.href },
+  async signIn(email: string, password: string) {
+    const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    if (error) throw error;
+    return { user: normalizeUser(data.user) };
+  },
+  async signUp(input: { email: string; password: string; username: string; fullName: string; phone: string; country: string; referralCode?: string }) {
+    const { data, error } = await supabase.auth.signUp({
+      email: input.email.trim(),
+      password: input.password,
+      options: {
+        data: {
+          username: input.username.trim(),
+          full_name: input.fullName.trim(),
+          name: input.fullName.trim(),
+          phone: input.phone.trim(),
+          country: input.country,
+          referral_code: input.referralCode?.trim().toUpperCase() || '',
+        },
+        emailRedirectTo: window.location.origin,
+      },
     });
     if (error) throw error;
-    return { user: await this.getUser() };
+    return { user: normalizeUser(data.user), session: data.session };
+  },
+  async resetPassword(email: string) {
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: window.location.origin });
+    if (error) throw error;
   },
   async signOut() {
     const { error } = await supabase.auth.signOut();
