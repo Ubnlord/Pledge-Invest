@@ -2,4 +2,210 @@
 @tailwind components;
 @tailwind utilities;
 
-/* STYLES */
+/* Pledge Invest — Burgundy + Warm Gray theme */
+:root {
+  --color-primary: #6B2737;
+  --color-primary-hover: #521D2A;
+  --color-secondary: #57534E;
+  --color-accent: #A16207;
+  --color-accent-hover: #854D0E;
+  --color-bg: #FAFAF9;
+  --color-text: #1C1917;
+  --color-white: #FFFFFF;
+  --color-border: #D6D3D1;
+  --color-border-light: #E7E5E4;
+  --color-primary-tint: #F5EDEF;
+  --color-secondary-tint: #F5F5F4;
+  --color-accent-tint: #FEF3C7;
+}
+
+@layer base {
+  html, body, #root {
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+  body {
+    color: var(--color-text);
+  }
+  a {
+    color: var(--color-accent);
+  }
+  a:hover {
+    color: var(--color-accent-hover);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-accent) !important;
+    outline-offset: 2px;
+  }
+}
+
+/* Page and section backgrounds: retain layout while replacing the old dark theme. */
+[class~="bg-[#071426]"],
+[class~="bg-[#0a192b]"],
+[class~="bg-[#0a1729]"],
+[class~="bg-[#0b1a2d]"],
+[class~="bg-[#142b45]"],
+[class~="bg-[#10213a]"],
+[class~="bg-[#10233a]"],
+[class~="bg-[#18304a]"],
+[class~="bg-slate-50"],
+[class~="bg-slate-100"],
+[class~="bg-slate-900"],
+[class~="bg-slate-950"] {
+  background-color: var(--color-bg) !important;
+}
+[class~="bg-white"] {
+  background-color: var(--color-white) !important;
+}
+
+/* Header, navbar, active navigation, and footer use the primary burgundy. */
+header,
+footer,
+[class~="bg-[#06101e]"],
+[class~="bg-[#050e1a]"] {
+  background-color: var(--color-primary) !important;
+  color: var(--color-white) !important;
+}
+header *,
+footer * {
+  border-color: rgba(250, 250, 249, 0.22);
+}
+header [class*="text-slate-"],
+footer [class*="text-slate-"],
+header [class*="text-emerald-"],
+footer [class*="text-emerald-"],
+header [class*="text-indigo-"],
+footer [class*="text-indigo-"] {
+  color: var(--color-white) !important;
+}
+nav button[class~="bg-indigo-600"],
+nav button[class~="bg-emerald-600"],
+nav button[class~="bg-emerald-500"] {
+  background-color: var(--color-primary) !important;
+  color: var(--color-white) !important;
+}
+
+/* Primary action buttons and former brand-color buttons. */
+button[class~="bg-indigo-600"],
+button[class~="bg-indigo-500"],
+button[class~="bg-emerald-600"],
+button[class~="bg-emerald-500"],
+button[class~="bg-emerald-400"],
+button[class~="bg-blue-600"],
+button[class~="bg-cyan-500"],
+a[class~="bg-indigo-600"],
+a[class~="bg-emerald-500"],
+a[class~="bg-emerald-400"] {
+  background-color: var(--color-primary) !important;
+  color: var(--color-white) !important;
+  border-color: var(--color-primary) !important;
+}
+button[class~="bg-indigo-600"]:hover,
+button[class~="bg-indigo-500"]:hover,
+button[class~="bg-emerald-600"]:hover,
+button[class~="bg-emerald-500"]:hover,
+button[class~="bg-emerald-400"]:hover,
+button[class~="bg-blue-600"]:hover,
+button[class~="bg-cyan-500"]:hover,
+a[class~="bg-indigo-600"]:hover,
+a[class~="bg-emerald-500"]:hover,
+a[class~="bg-emerald-400"]:hover {
+  background-color: var(--color-primary-hover) !important;
+}
+button[class*="border-emerald-"],
+button[class*="border-indigo-"],
+button[class*="border-blue-"] {
+  border-color: var(--color-primary) !important;
+}
+button[class*="hover:bg-emerald-"]:hover,
+button[class*="hover:bg-indigo-"]:hover,
+button[class*="hover:bg-blue-"]:hover {
+  background-color: var(--color-primary-tint) !important;
+  color: var(--color-primary) !important;
+}
+
+/* Secondary and tertiary surfaces, including fields, cards, modals and tables. */
+input, select, textarea {
+  color: var(--color-text);
+  border-color: var(--color-border) !important;
+  background-color: var(--color-white);
+}
+[class*="border-slate-"],
+[class*="border-gray-"],
+[class*="border-indigo-"],
+[class*="border-emerald-"],
+[class*="border-cyan-"],
+[class*="border-blue-"],
+[class*="divide-slate-"] {
+  border-color: var(--color-border-light) !important;
+}
+[class*="bg-indigo-50"],
+[class*="bg-indigo-100"],
+[class*="bg-emerald-50"],
+[class*="bg-emerald-100"],
+[class*="bg-cyan-50"],
+[class*="bg-blue-50"],
+[class*="bg-slate-100"],
+[class*="bg-slate-50"] {
+  background-color: var(--color-secondary-tint) !important;
+}
+[class*="bg-red-50"],
+[class*="bg-amber-50"],
+[class*="bg-orange-50"],
+[class*="bg-yellow-50"] {
+  background-color: var(--color-accent-tint) !important;
+}
+
+/* Text hierarchy. Burgundy for headings; warm gray for supporting copy and icons. */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-primary);
+}
+p, label, small, caption,
+[class*="text-slate-"],
+[class*="text-gray-"],
+[class*="text-zinc-"] {
+  color: var(--color-secondary);
+}
+[class*="text-indigo-"],
+[class*="text-emerald-"],
+[class*="text-cyan-"],
+[class*="text-blue-"],
+[class*="text-teal-"],
+[class*="text-violet-"],
+[class*="text-purple-"],
+[class*="text-orange-"],
+[class*="text-red-"],
+[class*="text-green-"] {
+  color: var(--color-secondary) !important;
+}
+a, button[class*="text-amber-"], button[class*="text-yellow-"] {
+  color: var(--color-accent);
+}
+button:hover, [role="button"]:hover {
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid var(--color-accent) !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--color-bg) !important;
+}
+
+/* Keep text legible on primary surfaces and primary buttons. */
+header h1, header h2, header h3, header p,
+footer h1, footer h2, footer h3, footer p,
+button[class~="bg-indigo-600"] *,
+button[class~="bg-indigo-500"] *,
+button[class~="bg-emerald-600"] *,
+button[class~="bg-emerald-500"] *,
+button[class~="bg-emerald-400"] *,
+button[class~="bg-blue-600"] *,
+a[class~="bg-indigo-600"] *,
+a[class~="bg-emerald-500"] *,
+a[class~="bg-emerald-400"] * {
+  color: var(--color-white) !important;
+}
+
+/* Status notices stay muted and readable in the requested neutral palette. */
+[role="alert"], [role="status"] {
+  border-color: var(--color-border) !important;
+}
