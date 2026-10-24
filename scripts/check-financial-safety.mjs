@@ -22,6 +22,8 @@ assert.match(api, /Investor has no linked authenticated wallet\. Link and verify
 assert.match(api, /Wallet link required before activation/, 'legacy investor creation must require wallet reconciliation');
 assert.match(api, /Daily profit rate must be between 0 and 100 percent/, 'daily profit configuration must be validated server-side');
 assert.match(api, /Referral percentage must be between 0 and 100 percent/, 'referral configuration must be validated server-side');
+assert.match(api, /This transaction hash has already been submitted on this network/, 'duplicate deposit submissions must return a conflict');
+assert.match(api, /Math\.round\(n\*100\)!==n\*100/, 'public deposit submissions must reject fractions of a cent');
 assert.doesNotMatch(api, /'DELETE \/api\/admin\/users\/:id'.*db\.delete\('pledge_investors'/s, 'admin delete route must not physically delete investor history');
 
 assert.match(sql, /create table if not exists public\.pledge_financial_ledger/i, 'financial ledger table must exist');
@@ -33,6 +35,8 @@ assert.match(sql, /'withdrawal_release'/i, 'withdrawal rejection must record a r
 assert.match(sql, /withdrawal_decision:'\|\|p_operation_key\|\|':'\|\|p_decision/i, 'withdrawal decisions must have deterministic idempotency keys');
 assert.match(sql, /revoke all on function public\.pledge_deposit_approve\(uuid,text\) from public,anon,authenticated/i, 'deposit approval must not be callable by public client roles');
 const depositFix = readFileSync('supabase/migrations/202610240005_fail_closed_deposit_approval.sql', 'utf8');
+const depositUnique = readFileSync('supabase/migrations/202610240006_unique_deposit_tx_hash.sql', 'utf8');
+assert.match(depositUnique, /create unique index if not exists pledge_deposit_requests_network_tx_hash_uidx/i, 'same-network transaction hashes must be unique');
 const planSync = readFileSync('supabase/migrations/202610240004_sync_investment_plans.sql', 'utf8');
 assert.match(planSync, /\('starter', 'Capital Preservation Plan'/, 'plan sync must preserve the existing starter plan ID');
 assert.match(planSync, /\('growth', 'Fixed Income Plan'/, 'plan sync must preserve the existing growth plan ID');
