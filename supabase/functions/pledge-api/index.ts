@@ -171,6 +171,7 @@ export async function dailyInvestorProfit(){
 }
 export const handler=router({
 'GET /api/_healthcheck':[async()=>json({message:'Success'})],
+'POST /api/internal/cron/daily-profit':[async(ctx)=>{const expected=String(await secrets.readSecret('PLEDGE_CRON_SECRET')||'').trim();const supplied=String(ctx.request.headers.get('x-cron-secret')||'').trim();if(!expected)return json({error:'Scheduled profit secret is not configured'},503);if(!supplied||supplied!==expected)return json({error:'Unauthorized'},401);const result=await dailyInvestorProfit();return json(result,Number(result.failed||0)>0?503:200);}],
 'POST /api/admin/login':[...adminGuard,async({body})=>{const code=(body as any)?.code;let configured='';try{configured=String(await secrets.readSecret('PLEDGE_ADMIN_AUTH_CODE')||'').trim();}catch{configured='';}if(!configured)return json({error:'Admin authentication code is not configured on the server'},500);if(typeof code!=='string'||code.trim()!==configured)return json({error:'Unauthorized'},401);await audit('Admin login','Administrator authenticated');return json({success:true});}],
 'POST /api/admin/logout':[...adminGuard,async()=>json({success:true})],
 'GET /api/me':[requireAuth(),async(ctx)=>json(await ensureAccount(ctx.user))],
