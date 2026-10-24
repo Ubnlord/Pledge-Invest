@@ -24,6 +24,8 @@ assert.match(api, /Wallet link required before activation/, 'legacy investor cre
 assert.match(api, /Daily profit rate must be between 0 and 100 percent/, 'daily profit configuration must be validated server-side');
 assert.match(api, /Referral percentage must be between 0 and 100 percent/, 'referral configuration must be validated server-side');
 assert.match(api, /This transaction hash has already been submitted on this network/, 'duplicate deposit submissions must return a conflict');
+assert.match(api, /reason:'provider_not_configured'/, 'push notifications must report unavailable provider rather than pretend to send');
+assert.doesNotMatch(api, /const notifications = \{ async send/, 'no-op push sender must not masquerade as a provider');
 assert.match(api, /Math\.round\(n\*100\)!==n\*100/, 'public deposit submissions must reject fractions of a cent');
 assert.doesNotMatch(api, /'DELETE \/api\/admin\/users\/:id'.*db\.delete\('pledge_investors'/s, 'admin delete route must not physically delete investor history');
 
