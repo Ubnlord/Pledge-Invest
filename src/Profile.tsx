@@ -244,17 +244,16 @@ export default function Profile({
           <Field label="Account status" value={p.accountStatus} disabled onChange={() => {}} />
           <Field label="Registration date" value={p.registrationDate} disabled onChange={() => {}} />
           <label>
-            <span className="mb-1 block text-sm font-semibold">Preferred currency</span>
+            <span className="mb-1 block text-sm font-semibold">Wallet currency</span>
             <select
-              value={p.preferredCurrency}
-              onChange={(e) => set('preferredCurrency', e.target.value)}
-              className="w-full rounded-xl border px-4 py-3"
+              value="USD"
+              disabled
+              aria-label="Wallet currency is fixed to USD"
+              className="w-full rounded-xl border px-4 py-3 disabled:cursor-not-allowed disabled:bg-stone-100"
             >
-              <option>USD</option>
-              <option>NGN</option>
-              <option>EUR</option>
-              <option>GBP</option>
+              <option value="USD">USD — US Dollar (fixed)</option>
             </select>
+            <span className="mt-1 block text-xs text-slate-500">PLEDGE INVEST wallet balances are maintained in USD only.</span>
           </label>
         </div>
 
