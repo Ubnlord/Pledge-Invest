@@ -57,6 +57,12 @@ function requireAuth(): Middleware {
     if (error || !data?.user) return json({ error: "Unauthorized" }, 401);
     const u:any = data.user;
     ctx.user = { userId: u.id, id: u.id, email: u.email || "", name: u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split("@")[0] || "" };
+    const email = String(ctx.user.email || "").toLowerCase();
+    if (!ADMIN_EMAILS.map((value) => value.toLowerCase()).includes(email)) {
+      const { items: accounts } = await db.list<any>(`pledge_account_${u.id}`, { limit: 1 });
+      const status = String(accounts[0]?.status || "active").toLowerCase();
+      if (status !== "active") return json({ error: "This investor account is inactive. Contact support for review." }, 403);
+    }
   };
 }
 function requireAdminEmailAllowlist(emails: string[]): Middleware {
