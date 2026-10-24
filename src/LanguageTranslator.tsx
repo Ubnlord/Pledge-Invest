@@ -290,7 +290,6 @@ export default function LanguageTranslator({ dark = false }: { dark?: boolean })
   const changeLanguage = (code: string) => {
     try { localStorage.setItem('pledge-site-language', code); } catch {}
     setLanguage(code);
-    window.location.reload();
   };
 
   return <div className="relative flex items-center gap-2">
