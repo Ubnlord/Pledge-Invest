@@ -19,7 +19,7 @@ const db = {
   async listAll<T = any>(table: string, pageSize = 1000) {
     const items: T[] = [];
     for (let offset = 0; ; offset += pageSize) {
-      const { data, error } = await supabase.from("pledge_records").select("id,record").eq("table_name", table).order("created_at", { ascending: true }).range(offset, offset + pageSize - 1);
+      const { data, error } = await supabase.from("pledge_records").select("id,record").eq("table_name", table).order("created_at", { ascending: true }).order("id", { ascending: true }).range(offset, offset + pageSize - 1);
       if (error) throw error;
       const page = (data || []).map((r: any) => ({ ...(r.record || {}), id: r.id })) as T[];
       items.push(...page);
@@ -132,7 +132,7 @@ export async function dailyInvestorProfit(){
  if(!settings?.dailyProfitEnabled||!Number.isFinite(rate)||rate<=0||rate>100)return {statusCode:200,updated:0,failed:0,skipped:true};
  const users:any[]=[];
  for(let offset=0;;offset+=1000){
-  const {data,error}=await supabase.from('pledge_records').select('id,record').eq('table_name','pledge_investors').order('created_at',{ascending:true}).range(offset,offset+999);
+  const {data,error}=await supabase.from('pledge_records').select('id,record').eq('table_name','pledge_investors').order('created_at',{ascending:true}).order('id',{ascending:true}).range(offset,offset+999);
   if(error)throw error;
   const page=(data||[]).map((r:any)=>({...r.record,id:r.id}));
   users.push(...page);
