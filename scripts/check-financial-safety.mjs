@@ -38,6 +38,11 @@ const depositFix = readFileSync('supabase/migrations/202610240005_fail_closed_de
 const depositUnique = readFileSync('supabase/migrations/202610240006_unique_deposit_tx_hash.sql', 'utf8');
 assert.match(depositUnique, /create unique index if not exists pledge_deposit_requests_network_tx_hash_uidx/i, 'same-network transaction hashes must be unique');
 const planSync = readFileSync('supabase/migrations/202610240004_sync_investment_plans.sql', 'utf8');
+const scheduler = readFileSync('.github/workflows/daily-investor-profit.yml', 'utf8');
+assert.match(api, /POST \/api\/internal\/cron\/daily-profit/, 'scheduled profit endpoint must exist');
+assert.match(api, /PLEDGE_CRON_SECRET/, 'scheduled profit endpoint must be secret protected');
+assert.match(scheduler, /cron: "0 23 \\* \\* \\*"/, 'daily scheduler must run at midnight Africa/Lagos time');
+assert.match(scheduler, /secrets\.PLEDGE_CRON_SECRET/, 'scheduler must use a GitHub Actions secret, not a committed credential');
 assert.match(planSync, /\('starter', 'Capital Preservation Plan'/, 'plan sync must preserve the existing starter plan ID');
 assert.match(planSync, /\('growth', 'Fixed Income Plan'/, 'plan sync must preserve the existing growth plan ID');
 assert.match(planSync, /\('premium', 'Balanced Portfolio'/, 'plan sync must preserve the existing premium plan ID');
