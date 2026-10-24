@@ -153,3 +153,66 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 button[class*="bg-indigo-"] *, button[class*="bg-blue-"] *, button[class*="bg-emerald-"] *,
 button[class*="bg-violet-"] *, button[class*="bg-purple-"] *,
 [class~="bg-[#6B2737]"] *, [class~="bg-[#521D2A]"] * { color: var(--color-white) !important; }
+
+
+/* Site-wide motion system: subtle, responsive, and accessible. */
+@keyframes pi-fade-up {
+  from { opacity: 0; transform: translate3d(0, 14px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes pi-soft-glow {
+  0%, 100% { box-shadow: 0 8px 26px rgba(99, 102, 241, 0.06); }
+  50% { box-shadow: 0 12px 34px rgba(99, 102, 241, 0.15); }
+}
+@keyframes pi-gradient-drift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes pi-pulse-dot {
+  0%, 100% { opacity: .55; transform: scale(.94); }
+  50% { opacity: 1; transform: scale(1.06); }
+}
+
+/* Page and section content enter smoothly without changing the layout. */
+#root { animation: pi-fade-up .55s cubic-bezier(.2,.7,.2,1) both; }
+#root section { animation: pi-fade-up .6s cubic-bezier(.2,.7,.2,1) both; }
+#root section:nth-of-type(2) { animation-delay: .06s; }
+#root section:nth-of-type(3) { animation-delay: .12s; }
+#root section:nth-of-type(4) { animation-delay: .18s; }
+
+/* Give cards a little lift and a soft violet highlight on hover/tap. */
+#root [class*="rounded-2xl"][class*="border"],
+#root [class*="rounded-xl"][class*="border"] {
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+#root [class*="rounded-2xl"][class*="border"]:hover,
+#root [class*="rounded-xl"][class*="border"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(99, 102, 241, .11);
+  border-color: rgba(99, 102, 241, .5) !important;
+}
+
+/* Buttons, links and form controls respond smoothly to interaction. */
+#root button, #root a, #root input, #root select, #root textarea {
+  transition: color .18s ease, background-color .18s ease, border-color .18s ease,
+    box-shadow .18s ease, transform .18s ease;
+}
+#root button:active, #root a:active { transform: scale(.985); }
+#root button:hover:not(:disabled) { filter: brightness(1.04); }
+#root button:disabled { cursor: not-allowed; }
+
+/* Keep the main brand banner alive with a very restrained animated gradient. */
+#root .dashboard-hero {
+  background-size: 200% 200% !important;
+  animation: pi-gradient-drift 9s ease-in-out infinite, pi-soft-glow 6s ease-in-out infinite;
+}
+
+/* Respect visitors who prefer reduced motion, including Android accessibility settings. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}
