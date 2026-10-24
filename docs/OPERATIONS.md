@@ -4,17 +4,9 @@
 
 The `daily-investor-profit.yml` GitHub Actions workflow is the active scheduler. It runs at 23:00 UTC (00:00 Africa/Lagos).
 
-The scheduler is deliberately fail-closed. Configure the same random, high-entropy value as `PLEDGE_CRON_SECRET` in both places before enabling scheduled credits:
-
-1. Supabase Dashboard → Edge Functions → Secrets: add `PLEDGE_CRON_SECRET`.
-2. GitHub repository Settings → Secrets and variables → Actions → New repository secret: add `PLEDGE_CRON_SECRET` with the identical value.
-3. Open Actions → Daily investor profit → Run workflow for a controlled manual run.
-4. Confirm the run reports the Lagos date, credit count, and zero failures before relying on the recurring schedule.
-
-Do not put the secret in source code, `cron.json`, workflow YAML, issues, or chat. The workflow sends only the secret header to the protected endpoint. If any credit fails, the workflow fails so it is visible in Actions.
+The scheduler is deliberately fail-closed and uses GitHub Actions OpenID Connect (OIDC), so it does not require a shared cron secret. The Edge Function accepts only tokens issued by GitHub for the `Ubnlord/Pledge-Invest` repository, the `main` branch, and this exact workflow. The workflow requests the `pledge-investor-profit-scheduler` audience and reports any failed credit in Actions.
 
 Before enabling daily accrual, verify the configured daily rate and `dailyProfitEnabled` setting in the admin dashboard. The rate is applied to each active investor's `invested` amount and is not a guaranteed return.
-
 ## Notification delivery
 
 - In-app notifications are recorded in the platform database.
