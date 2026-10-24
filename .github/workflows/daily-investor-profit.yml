@@ -1,0 +1,47 @@
+name: Daily investor profit
+
+on:
+  schedule:
+    # 23:00 UTC is 00:00 in Africa/Lagos (UTC+1).
+    - cron: "0 23 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pledge-daily-investor-profit
+  cancel-in-progress: false
+
+jobs:
+  accrue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Require scheduler secret
+        env:
+          PLEDGE_CRON_SECRET: ${{ secrets.PLEDGE_CRON_SECRET }}
+        run: |
+          if [ -z "$PLEDGE_CRON_SECRET" ]; then
+            echo "::error::Configure PLEDGE_CRON_SECRET in both GitHub Actions secrets and Supabase Edge Function secrets."
+            exit 1
+          fi
+      - name: Run daily profit accrual
+        env:
+          PLEDGE_CRON_SECRET: ${{ secrets.PLEDGE_CRON_SECRET }}
+        run: |
+          set -euo pipefail
+          response_file="$(mktemp)"
+          status="$(curl --silent --show-error --max-time 120 \
+            --output "$response_file" --write-out '%{http_code}' \
+            --request POST \
+            --header "x-cron-secret: $PLEDGE_CRON_SECRET" \
+            --header "content-type: application/json" \
+            --data '{}' \
+            "https://xypcqtqmekrjgytivmsm.supabase.co/functions/v1/pledge-api/api/internal/cron/daily-profit")"
+          cat "$response_file"
+          if [ "$status" -lt 200 ] || [ "$status" -ge 300 ]; then
+            echo "::error::Daily profit endpoint returned HTTP $status"
+            exit 1
+          fi
+          node -e 'const fs=require("fs"); const r=JSON.parse(fs.readFileSync(process.argv[1],"utf8")); if(Number(r.failed||0)>0) { console.error("One or more profit credits failed; inspect the response and financial ledger."); process.exit(1); } console.log(r.skipped ? "Daily profit is disabled; no credits were applied." : `Accrual complete for ${r.day}: ${r.updated} credits, ${r.failed} failures.`);' "$response_file"
