@@ -295,7 +295,7 @@ a[class~="bg-emerald-400"] {
 [class*="bg-blue-400/"] {
   background-color: color-mix(in srgb, var(--color-primary) 10%, transparent) !important;
 }
-[class*="text-[#"] {
+[class~="text-[#05251f]"] {
   color: var(--color-text) !important;
 }
 
@@ -310,4 +310,17 @@ a[class~="bg-indigo-600"],
 a[class~="bg-emerald-500"],
 a[class~="bg-emerald-400"] {
   color: var(--color-white) !important;
+}
+
+/* Keep the dashboard welcome banner and primary actions readable on burgundy. */
+.dashboard-hero .text-white,
+.dashboard-hero h1,
+.dashboard-hero p,
+.dashboard-hero button,
+button[class~="bg-[#6B2737]"],
+button[class~="bg-[#521D2A]"] {
+  color: var(--color-white) !important;
+}
+button[class~="bg-[#6B2737]"]:hover {
+  background-color: var(--color-primary-hover) !important;
 }
