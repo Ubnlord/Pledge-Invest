@@ -1,0 +1,42 @@
+name: Deploy Supabase pledge-api
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-pledge-api-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Verify required source and project target
+        shell: bash
+        run: |
+          test -s supabase/functions/pledge-api/index.ts
+          grep -q "'POST /api/admin/login'" supabase/functions/pledge-api/index.ts
+          grep -q "p_identifier_hash:identifierHash,p_success:true" supabase/functions/pledge-api/index.ts
+          echo "Source checks passed; target is pledge-api only."
+
+      - name: Deploy pledge-api to the configured Supabase project
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        shell: bash
+        run: |
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ]; then
+            echo "Missing required GitHub Actions secret SUPABASE_ACCESS_TOKEN."
+            exit 1
+          fi
+          npx --yes supabase@latest functions deploy pledge-api \
+            --project-ref xypcqtqmekrjgytivmsm \
+            --no-verify-jwt
