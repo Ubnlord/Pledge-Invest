@@ -1,1 +1,0 @@
-[{"name":"daily-investor-profit","cron":"0 0 * * *","handler":"dailyInvestorProfit","timezone":"Africa/Lagos","payload":{}}]
