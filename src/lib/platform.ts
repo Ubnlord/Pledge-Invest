@@ -40,7 +40,14 @@ export const auth = {
   async getUser() {
     const { data, error } = await supabase.auth.getUser();
     if (error && error.message !== 'Auth session missing!') throw error;
-    return normalizeUser(data?.user);
+    const user = normalizeUser(data?.user);
+    // Main investor app must never restore the administrator identity from an older shared-origin session.
+    if (user && String(user.email || '').trim().toLowerCase() === 'pledgeinvest4@gmail.com') {
+      const { error: signOutError } = await supabase.auth.signOut();
+      if (signOutError) throw signOutError;
+      return null;
+    }
+    return user;
   },
   async signIn(email: string, password: string) {
     const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
