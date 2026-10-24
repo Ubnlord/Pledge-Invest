@@ -23,4 +23,5 @@ jobs:
       - name: Type-check TypeScript
         run: npx tsc --noEmit
       - name: Build production assets (no deployment)
+        if: always()
         run: npm run build
