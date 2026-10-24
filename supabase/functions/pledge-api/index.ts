@@ -71,8 +71,20 @@ function requireAuth(): Middleware {
     const email = String(ctx.user.email || "").toLowerCase();
     if (!ADMIN_EMAILS.map((value) => value.toLowerCase()).includes(email)) {
       const { items: accounts } = await db.list<any>(`pledge_account_${u.id}`, { limit: 1 });
-      const status = String(accounts[0]?.status || "active").toLowerCase();
-      if (status !== "active") return json({ error: "This investor account is inactive. Contact support for review." }, 403);
+      const accountStatus = String(accounts[0]?.status || "active").toLowerCase();
+      if (accountStatus !== "active") return json({ error: "This investor account is inactive. Contact support for review." }, 403);
+      const { data: investorRow, error: investorLookupError } = await supabase
+        .from("pledge_records")
+        .select("record")
+        .eq("table_name", "pledge_investors")
+        .contains("record", { user_id: u.id })
+        .limit(1)
+        .maybeSingle();
+      if (investorLookupError) return json({ error: "Unable to verify investor account status. Please retry." }, 503);
+      if (investorRow) {
+        const investorStatus = String((investorRow.record as any)?.status || "active").toLowerCase();
+        if (investorStatus !== "active") return json({ error: "This investor account is inactive. Contact support for review." }, 403);
+      }
     }
   };
 }
@@ -143,7 +155,7 @@ export async function dailyInvestorProfit(){
  const day=`${values.year}-${values.month}-${values.day}`;
  let updated=0,failed=0;
  for(const u of users){
-  if(u.status==='inactive'||u.status==='suspended')continue;
+  if(String(u.status||'active').toLowerCase()!=='active')continue;
   const invested=Number(u.invested||0);
   if(!Number.isFinite(invested)||invested<=0||!u.user_id)continue;
   const profit=Number((invested*rate/100).toFixed(2));
