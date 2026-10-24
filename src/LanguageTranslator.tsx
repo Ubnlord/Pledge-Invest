@@ -27,21 +27,44 @@ export default function LanguageTranslator({ dark = false }: { dark?: boolean })
       const saved = localStorage.getItem('pledge-site-language');
       if (saved && languages.some(item => item.code === saved)) setLanguage(saved);
     } catch {}
+  }, []);
+
+  const changeLanguage = (code: string) => {
+    setLanguage(code);
+    try { localStorage.setItem('pledge-site-language', code); } catch {}
+    if (code === 'en') {
+      const combo = document.querySelector<HTMLSelectElement>('.goog-te-combo');
+      if (combo) {
+        combo.value = '';
+        combo.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      return;
+    }
 
     const initialize = () => {
       const GoogleTranslate = window.google?.translate?.TranslateElement;
-      if (!GoogleTranslate || document.getElementById('pledge-google-translate')?.dataset.ready === 'true') return;
-      new GoogleTranslate({
-        pageLanguage: 'en',
-        includedLanguages: 'en,es,fr,it,pt,nl,zh-CN,zh-TW,hi',
-        autoDisplay: false,
-      }, 'pledge-google-translate');
+      if (!GoogleTranslate) return false;
       const container = document.getElementById('pledge-google-translate');
-      if (container) container.dataset.ready = 'true';
+      if (!container) return false;
+      if (container.dataset.ready !== 'true') {
+        new GoogleTranslate({
+          pageLanguage: 'en',
+          includedLanguages: 'en,es,fr,it,pt,nl,zh-CN,zh-TW,hi',
+          autoDisplay: false,
+        }, 'pledge-google-translate');
+        container.dataset.ready = 'true';
+      }
+      const combo = document.querySelector<HTMLSelectElement>('.goog-te-combo');
+      if (!combo) return false;
+      combo.value = code;
+      combo.dispatchEvent(new Event('change', { bubbles: true }));
+      return true;
     };
 
+    if (initialize()) return;
     window.googleTranslateElementInit = initialize;
-    if (!document.querySelector('script[data-pledge-google-translate]')) {
+    const existing = document.querySelector<HTMLScriptElement>('script[data-pledge-google-translate]');
+    if (!existing) {
       const script = document.createElement('script');
       script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
       script.async = true;
@@ -49,26 +72,9 @@ export default function LanguageTranslator({ dark = false }: { dark?: boolean })
       script.onerror = () => { script.remove(); };
       document.head.appendChild(script);
     } else {
-      initialize();
+      const retry = () => { initialize(); };
+      existing.addEventListener('load', retry, { once: true });
     }
-    return () => {
-      if (window.googleTranslateElementInit === initialize) delete window.googleTranslateElementInit;
-    };
-  }, []);
-
-  const changeLanguage = (code: string) => {
-    setLanguage(code);
-    try { localStorage.setItem('pledge-site-language', code); } catch {}
-    const apply = () => {
-      const combo = document.querySelector<HTMLSelectElement>('.goog-te-combo');
-      if (!combo) return false;
-      combo.value = code === 'en' ? '' : code;
-      combo.dispatchEvent(new Event('change', { bubbles: true }));
-      return true;
-    };
-    if (apply()) return;
-    window.setTimeout(apply, 350);
-    window.setTimeout(apply, 1000);
   };
 
   return <div className="relative flex items-center gap-2">
