@@ -47,7 +47,10 @@ assert.match(authLimit, /interval '15 minutes'/i, 'admin rate limit must use a b
 assert.match(depositUnique, /create unique index if not exists pledge_deposit_requests_network_tx_hash_uidx/i, 'same-network transaction hashes must be unique');
 const planSync = readFileSync('supabase/migrations/202610240004_sync_investment_plans.sql', 'utf8');
 const scheduler = readFileSync('.github/workflows/daily-investor-profit.yml', 'utf8');
+const validationWorkflow = readFileSync('.github/workflows/validate.yml', 'utf8');
 assert.match(api, /POST \/api\/internal\/cron\/daily-profit/, 'scheduled profit endpoint must exist');
+assert.match(api, /POST \/api\/internal\/cron\/verify/, 'CI must be able to verify OIDC without running financial operations');
+assert.match(validationWorkflow, /Verify GitHub OIDC trust against production endpoint/, 'CI must perform a live, side-effect-free OIDC verification');
 assert.match(api, /pledge_admin_auth_attempt/, 'admin authentication must use persistent rate limiting');
 assert.match(api, /Too many attempts\. Wait 15 minutes/, 'admin authentication must return a rate-limit response');
 assert.match(api, /jwtVerify\(token, GITHUB_ACTIONS_JWKS/, 'scheduled profit endpoint must validate GitHub OIDC tokens');
