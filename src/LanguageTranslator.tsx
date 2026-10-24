@@ -13,6 +13,8 @@ const languages = [
 ];
 
 type Dictionary = Record<string, string>;
+const originalTextNodes = new WeakMap<Text, string>();
+const originalAttributes = new WeakMap<Element, Map<string, string>>();
 const dictionaries: Record<string, Dictionary> = {
   es: {
     'Login': 'Iniciar sesión', 'Log In': 'Iniciar sesión', 'Sign In': 'Iniciar sesión',
@@ -28,6 +30,18 @@ const dictionaries: Record<string, Dictionary> = {
     'Cancel': 'Cancelar', 'Save': 'Guardar', 'Back': 'Atrás', 'Next': 'Siguiente', 'Close': 'Cerrar',
     'Available Balance': 'Saldo disponible', 'Recent Transactions': 'Transacciones recientes',
     'Terms of Service': 'Términos del servicio', 'Privacy Policy': 'Política de privacidad',
+    "Building Wealth ": "Construyendo riqueza ",
+    "with Vision.": "con visión.",
+    "Investing in Tomorrow, Today.": "Invierte hoy en el mañana.",
+    "A clearer investing experience": "Una experiencia de inversión más clara",
+    "Register Now ↗": "Regístrate ahora ↗",
+    "Explore Dashboard →": "Explorar panel →",
+    "Already a member? Access your account": "¿Ya eres miembro? Accede a tu cuenta",
+    "A clearer way to manage your digital assets": "Una forma más clara de gestionar tus activos digitales",
+    "YOUR ACCOUNT, AT A GLANCE": "TU CUENTA DE UN VISTAZO",
+    "LIVE MARKET": "MERCADO EN VIVO",
+    "Login": "Iniciar sesión",
+    "Create Account": "Crear cuenta",
   },
   fr: {
     'Login': 'Connexion', 'Log In': 'Connexion', 'Sign In': 'Se connecter',
@@ -43,6 +57,18 @@ const dictionaries: Record<string, Dictionary> = {
     'Cancel': 'Annuler', 'Save': 'Enregistrer', 'Back': 'Retour', 'Next': 'Suivant', 'Close': 'Fermer',
     'Available Balance': 'Solde disponible', 'Recent Transactions': 'Transactions récentes',
     'Terms of Service': 'Conditions d’utilisation', 'Privacy Policy': 'Politique de confidentialité',
+    "Building Wealth ": "Construire un patrimoine ",
+    "with Vision.": "avec vision.",
+    "Investing in Tomorrow, Today.": "Investir aujourd’hui pour demain.",
+    "A clearer investing experience": "Une expérience d’investissement plus claire",
+    "Register Now ↗": "S’inscrire ↗",
+    "Explore Dashboard →": "Explorer le tableau de bord →",
+    "Already a member? Access your account": "Déjà membre ? Accédez à votre compte",
+    "A clearer way to manage your digital assets": "Une façon plus claire de gérer vos actifs numériques",
+    "YOUR ACCOUNT, AT A GLANCE": "VOTRE COMPTE EN UN COUP D’ŒIL",
+    "LIVE MARKET": "MARCHÉ EN DIRECT",
+    "Login": "Connexion",
+    "Create Account": "Créer un compte",
   },
   it: {
     'Login': 'Accedi', 'Log In': 'Accedi', 'Sign In': 'Accedi', 'Create Account': 'Crea account',
@@ -57,6 +83,18 @@ const dictionaries: Record<string, Dictionary> = {
     'Phone': 'Telefono', 'Country': 'Paese', 'Submit': 'Invia', 'Cancel': 'Annulla', 'Save': 'Salva',
     'Back': 'Indietro', 'Next': 'Avanti', 'Close': 'Chiudi', 'Available Balance': 'Saldo disponibile',
     'Recent Transactions': 'Transazioni recenti', 'Terms of Service': 'Termini di servizio', 'Privacy Policy': 'Informativa sulla privacy',
+    "Building Wealth ": "Costruisci il tuo patrimonio ",
+    "with Vision.": "con visione.",
+    "Investing in Tomorrow, Today.": "Investi oggi nel domani.",
+    "A clearer investing experience": "Un’esperienza d’investimento più chiara",
+    "Register Now ↗": "Registrati ora ↗",
+    "Explore Dashboard →": "Esplora la dashboard →",
+    "Already a member? Access your account": "Hai già un account? Accedi",
+    "A clearer way to manage your digital assets": "Un modo più chiaro per gestire i tuoi asset digitali",
+    "YOUR ACCOUNT, AT A GLANCE": "IL TUO ACCOUNT A COLPO D’OCCHIO",
+    "LIVE MARKET": "MERCATO IN TEMPO REALE",
+    "Login": "Accedi",
+    "Create Account": "Crea account",
   },
   pt: {
     'Login': 'Entrar', 'Log In': 'Entrar', 'Sign In': 'Iniciar sessão', 'Create Account': 'Criar conta',
@@ -71,6 +109,18 @@ const dictionaries: Record<string, Dictionary> = {
     'Phone': 'Telefone', 'Country': 'País', 'Submit': 'Enviar', 'Cancel': 'Cancelar', 'Save': 'Guardar',
     'Back': 'Voltar', 'Next': 'Seguinte', 'Close': 'Fechar', 'Available Balance': 'Saldo disponível',
     'Recent Transactions': 'Transações recentes', 'Terms of Service': 'Termos de serviço', 'Privacy Policy': 'Política de privacidade',
+    "Building Wealth ": "Construa riqueza ",
+    "with Vision.": "com visão.",
+    "Investing in Tomorrow, Today.": "Invista hoje no amanhã.",
+    "A clearer investing experience": "Uma experiência de investimento mais clara",
+    "Register Now ↗": "Registe-se agora ↗",
+    "Explore Dashboard →": "Explorar painel →",
+    "Already a member? Access your account": "Já tem conta? Aceda à sua conta",
+    "A clearer way to manage your digital assets": "Uma forma mais clara de gerir os seus ativos digitais",
+    "YOUR ACCOUNT, AT A GLANCE": "A SUA CONTA NUM RELANCE",
+    "LIVE MARKET": "MERCADO EM TEMPO REAL",
+    "Login": "Entrar",
+    "Create Account": "Criar conta",
   },
   nl: {
     'Login': 'Inloggen', 'Log In': 'Inloggen', 'Sign In': 'Aanmelden', 'Create Account': 'Account aanmaken',
@@ -85,6 +135,18 @@ const dictionaries: Record<string, Dictionary> = {
     'Cancel': 'Annuleren', 'Save': 'Opslaan', 'Back': 'Terug', 'Next': 'Volgende', 'Close': 'Sluiten',
     'Available Balance': 'Beschikbaar saldo', 'Recent Transactions': 'Recente transacties',
     'Terms of Service': 'Servicevoorwaarden', 'Privacy Policy': 'Privacybeleid',
+    "Building Wealth ": "Bouw vermogen op ",
+    "with Vision.": "met visie.",
+    "Investing in Tomorrow, Today.": "Investeer vandaag in morgen.",
+    "A clearer investing experience": "Een duidelijkere beleggingservaring",
+    "Register Now ↗": "Registreer nu ↗",
+    "Explore Dashboard →": "Dashboard bekijken →",
+    "Already a member? Access your account": "Al lid? Ga naar je account",
+    "A clearer way to manage your digital assets": "Een duidelijkere manier om je digitale bezittingen te beheren",
+    "YOUR ACCOUNT, AT A GLANCE": "JE ACCOUNT IN ÉÉN OOGOPSLAG",
+    "LIVE MARKET": "LIVE MARKT",
+    "Login": "Inloggen",
+    "Create Account": "Account aanmaken",
   },
   'zh-CN': {
     'Login': '登录', 'Log In': '登录', 'Sign In': '登录', 'Create Account': '创建账户',
@@ -98,6 +160,18 @@ const dictionaries: Record<string, Dictionary> = {
     'Full Name': '姓名', 'Phone': '电话', 'Country': '国家', 'Submit': '提交', 'Cancel': '取消',
     'Save': '保存', 'Back': '返回', 'Next': '下一步', 'Close': '关闭', 'Available Balance': '可用余额',
     'Recent Transactions': '最近交易', 'Terms of Service': '服务条款', 'Privacy Policy': '隐私政策',
+    "Building Wealth ": "创造财富 ",
+    "with Vision.": "以远见。",
+    "Investing in Tomorrow, Today.": "投资今天，成就明天。",
+    "A clearer investing experience": "更清晰的投资体验",
+    "Register Now ↗": "立即注册 ↗",
+    "Explore Dashboard →": "查看仪表板 →",
+    "Already a member? Access your account": "已有账户？登录账户",
+    "A clearer way to manage your digital assets": "更清晰地管理您的数字资产",
+    "YOUR ACCOUNT, AT A GLANCE": "一览您的账户",
+    "LIVE MARKET": "实时市场",
+    "Login": "登录",
+    "Create Account": "创建账户",
   },
   'zh-TW': {
     'Login': '登入', 'Log In': '登入', 'Sign In': '登入', 'Create Account': '建立帳戶',
@@ -111,6 +185,18 @@ const dictionaries: Record<string, Dictionary> = {
     'Full Name': '姓名', 'Phone': '電話', 'Country': '國家', 'Submit': '提交', 'Cancel': '取消',
     'Save': '儲存', 'Back': '返回', 'Next': '下一步', 'Close': '關閉', 'Available Balance': '可用餘額',
     'Recent Transactions': '近期交易', 'Terms of Service': '服務條款', 'Privacy Policy': '隱私政策',
+    "Building Wealth ": "創造財富 ",
+    "with Vision.": "以遠見。",
+    "Investing in Tomorrow, Today.": "投資今天，成就明天。",
+    "A clearer investing experience": "更清晰的投資體驗",
+    "Register Now ↗": "立即註冊 ↗",
+    "Explore Dashboard →": "查看儀表板 →",
+    "Already a member? Access your account": "已有帳戶？登入帳戶",
+    "A clearer way to manage your digital assets": "更清晰地管理您的數位資產",
+    "YOUR ACCOUNT, AT A GLANCE": "一覽您的帳戶",
+    "LIVE MARKET": "即時市場",
+    "Login": "登入",
+    "Create Account": "建立帳戶",
   },
   hi: {
     'Login': 'लॉग इन', 'Log In': 'लॉग इन', 'Sign In': 'साइन इन', 'Create Account': 'खाता बनाएं',
@@ -125,6 +211,18 @@ const dictionaries: Record<string, Dictionary> = {
     'Phone': 'फ़ोन', 'Country': 'देश', 'Submit': 'जमा करें', 'Cancel': 'रद्द करें', 'Save': 'सहेजें',
     'Back': 'वापस', 'Next': 'अगला', 'Close': 'बंद करें', 'Available Balance': 'उपलब्ध शेष',
     'Recent Transactions': 'हाल के लेन-देन', 'Terms of Service': 'सेवा की शर्तें', 'Privacy Policy': 'गोपनीयता नीति',
+    "Building Wealth ": "संपत्ति बनाएं ",
+    "with Vision.": "दूरदृष्टि के साथ।",
+    "Investing in Tomorrow, Today.": "आज निवेश करें, कल संवारें।",
+    "A clearer investing experience": "निवेश का अधिक स्पष्ट अनुभव",
+    "Register Now ↗": "अभी पंजीकरण करें ↗",
+    "Explore Dashboard →": "डैशबोर्ड देखें →",
+    "Already a member? Access your account": "पहले से सदस्य हैं? अपने खाते में जाएं",
+    "A clearer way to manage your digital assets": "अपनी डिजिटल संपत्तियों को प्रबंधित करने का बेहतर तरीका",
+    "YOUR ACCOUNT, AT A GLANCE": "एक नज़र में आपका खाता",
+    "LIVE MARKET": "लाइव बाज़ार",
+    "Login": "लॉग इन",
+    "Create Account": "खाता बनाएं",
   },
 };
 
@@ -142,12 +240,11 @@ export default function LanguageTranslator({ dark = false }: { dark?: boolean })
 
   useEffect(() => {
     const dict = dictionariesWithEnglish[language] || {};
-    const originals = new WeakMap<Text, string>();
     const translateText = (node: Text) => {
       const parent = node.parentElement;
       if (!parent || parent.closest('script,style,noscript,textarea,input,select,option,[contenteditable="true"]')) return;
-      const original = originals.get(node) ?? node.data;
-      originals.set(node, original);
+      const original = originalTextNodes.get(node) ?? node.data;
+      originalTextNodes.set(node, original);
       const trimmed = original.trim();
       if (!trimmed) return;
       const translated = dict[trimmed] || trimmed;
@@ -158,9 +255,13 @@ export default function LanguageTranslator({ dark = false }: { dark?: boolean })
     const translateAttributes = (element: Element) => {
       for (const attr of ['placeholder', 'aria-label', 'title']) {
         const value = element.getAttribute(attr);
-        if (!value) continue;
-        const translated = dict[value];
-        if (translated && translated !== value) element.setAttribute(attr, translated);
+        if (value == null) continue;
+        let originals = originalAttributes.get(element);
+        if (!originals) { originals = new Map<string, string>(); originalAttributes.set(element, originals); }
+        const original = originals.get(attr) ?? value;
+        originals.set(attr, original);
+        const translated = dict[original] ?? original;
+        if (element.getAttribute(attr) !== translated) element.setAttribute(attr, translated);
       }
     };
     const translateTree = (root: ParentNode) => {
