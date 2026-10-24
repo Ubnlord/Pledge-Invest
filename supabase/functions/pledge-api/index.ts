@@ -6,7 +6,7 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const supabase = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
 const GITHUB_ACTIONS_JWKS = createRemoteJWKSet(new URL("https://token.actions.githubusercontent.com/.well-known/jwks"));
-async function isTrustedProfitScheduler(request: Request) {
+async function isTrustedGitHubWorkflow(request: Request, expectedWorkflowRef: string) {
   const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
   if (!token) return false;
   try {
@@ -16,7 +16,7 @@ async function isTrustedProfitScheduler(request: Request) {
     });
     return payload.repository === "Ubnlord/Pledge-Invest"
       && payload.ref === "refs/heads/main"
-      && payload.workflow_ref === "Ubnlord/Pledge-Invest/.github/workflows/daily-investor-profit.yml@refs/heads/main";
+      && payload.workflow_ref === expectedWorkflowRef;
   } catch {
     return false;
   }
@@ -188,7 +188,8 @@ export async function dailyInvestorProfit(){
 }
 export const handler=router({
 'GET /api/_healthcheck':[async()=>json({message:'Success'})],
-'POST /api/internal/cron/daily-profit':[async(ctx)=>{if(!await isTrustedProfitScheduler(ctx.request))return json({error:'Unauthorized scheduled invocation'},401);const result=await dailyInvestorProfit();return json(result,Number(result.failed||0)>0?503:200);}],
+'POST /api/internal/cron/verify':[async(ctx)=>{const expected='Ubnlord/Pledge-Invest/.github/workflows/validate.yml@refs/heads/main';if(!await isTrustedGitHubWorkflow(ctx.request,expected))return json({error:'Unauthorized workflow verification'},401);return json({success:true,repository:'Ubnlord/Pledge-Invest',ref:'refs/heads/main'});}],
+'POST /api/internal/cron/daily-profit':[async(ctx)=>{const expected='Ubnlord/Pledge-Invest/.github/workflows/daily-investor-profit.yml@refs/heads/main';if(!await isTrustedGitHubWorkflow(ctx.request,expected))return json({error:'Unauthorized scheduled invocation'},401);const result=await dailyInvestorProfit();return json(result,Number(result.failed||0)>0?503:200);}],
 'POST /api/admin/login':[...adminGuard,async(ctx)=>{const code=(ctx.body as any)?.code;let configured='';try{configured=String(await secrets.readSecret('PLEDGE_ADMIN_AUTH_CODE')||'').trim();}catch{configured='';}if(!configured)return json({error:'Admin authentication code is not configured on the server'},500);const email=String(ctx.user?.email||'').trim().toLowerCase();const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(email));const identifierHash=Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');const valid=typeof code==='string'&&code.trim()===configured;const {data:limit,error:limitError}=await supabase.rpc('pledge_admin_auth_attempt',{p_identifier_hash:identifierHash,p_success:valid});if(limitError)return json({error:'Unable to verify administrator attempt safely. Please retry later.'},503);if(!limit?.allowed){await audit('Admin login rate limited',email);return json({error:'Too many attempts. Wait 15 minutes before trying again.'},429);}if(!valid){await audit('Admin login failed',email);return json({error:'Unauthorized'},401);}await audit('Admin login','Administrator authenticated');return json({success:true});}],
 'POST /api/admin/logout':[...adminGuard,async()=>json({success:true})],
 'GET /api/me':[requireAuth(),async(ctx)=>json(await ensureAccount(ctx.user))],
