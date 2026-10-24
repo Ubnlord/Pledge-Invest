@@ -2,325 +2,154 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Pledge Invest — Burgundy + Warm Gray theme */
+/* Pledge Invest — Violet + Dark Navy palette */
 :root {
-  --color-primary: #6B2737;
-  --color-primary-hover: #521D2A;
-  --color-secondary: #57534E;
-  --color-accent: #A16207;
-  --color-accent-hover: #854D0E;
-  --color-bg: #FAFAF9;
-  --color-text: #1C1917;
+  --color-primary: #6366F1;
+  --color-primary-dark: #4F46E5;
+  --color-primary-hover: #4F46E5;
+  --color-primary-tint: rgba(99, 102, 241, 0.1);
+  --color-bg-dark: #0F0B21;
+  --color-surface-dark: #1B1635;
+  --color-bg-light: #FFFFFF;
+  --color-bg-soft: #F6F6FB;
+  --color-bg: #FFFFFF;
+  --color-text: #1F2033;
+  --color-text-muted: #6B6D85;
+  --color-text-dark-muted: #B8B6D6;
   --color-white: #FFFFFF;
-  --color-border: #D6D3D1;
-  --color-border-light: #E7E5E4;
-  --color-primary-tint: #F5EDEF;
-  --color-secondary-tint: #F5F5F4;
-  --color-accent-tint: #FEF3C7;
+  --color-border: #E4E4F0;
+  --color-border-dark: #2D2748;
+  --color-secondary: #6B6D85;
+  --color-accent: #6366F1;
+  --color-accent-hover: #4F46E5;
+  --color-border-light: #E4E4F0;
+  --color-secondary-tint: #F6F6FB;
+  --color-accent-tint: rgba(99, 102, 241, 0.1);
 }
 
 @layer base {
-  html, body, #root {
-    background: var(--color-bg);
-    color: var(--color-text);
-  }
-  body {
-    color: var(--color-text);
-  }
-  a {
-    color: var(--color-accent);
-  }
-  a:hover {
-    color: var(--color-accent-hover);
-  }
-  :focus-visible {
-    outline: 3px solid var(--color-accent) !important;
-    outline-offset: 2px;
-  }
+  html, body, #root { background: var(--color-bg-light); color: var(--color-text); }
+  body { color: var(--color-text); }
+  a { color: var(--color-primary); }
+  a:hover { color: var(--color-primary-dark); }
+  :focus-visible { outline: 2px solid rgba(99, 102, 241, 0.5) !important; outline-offset: 2px; }
+  input, select, textarea { color: var(--color-text); border-color: var(--color-border) !important; background-color: var(--color-bg-light); }
+  input:focus, select:focus, textarea:focus { border-color: var(--color-primary) !important; box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2) !important; }
 }
 
-/* Page and section backgrounds: retain layout while replacing the old dark theme. */
-[class~="bg-[#071426]"],
-[class~="bg-[#0a192b]"],
-[class~="bg-[#0a1729]"],
-[class~="bg-[#0b1a2d]"],
-[class~="bg-[#142b45]"],
-[class~="bg-[#10213a]"],
-[class~="bg-[#10233a]"],
-[class~="bg-[#18304a]"],
-[class~="bg-slate-50"],
-[class~="bg-slate-100"],
-[class~="bg-slate-900"],
-[class~="bg-slate-950"] {
-  background-color: var(--color-bg) !important;
+/* Light sections and legacy light utility backgrounds. */
+[class~="bg-white"], [class~="bg-slate-50"], [class~="bg-slate-100"], [class~="bg-stone-50"],
+[class~="bg-[#FAFAF9]"], [class~="bg-[#F5F5F4]"], [class~="bg-[#F5EDEF]"] {
+  background-color: var(--color-bg-light) !important;
 }
-[class~="bg-white"] {
-  background-color: var(--color-white) !important;
+[class~="bg-slate-50"], [class~="bg-slate-100"], [class~="bg-stone-50"],
+[class*="bg-indigo-50"], [class*="bg-indigo-100"], [class*="bg-blue-50"],
+[class*="bg-emerald-50"], [class*="bg-cyan-50"], [class*="bg-[#FAFAF9]"],
+[class*="bg-[#F5F5F4]"], [class*="bg-[#F5EDEF]"] {
+  background-color: var(--color-bg-soft) !important;
 }
 
-/* Header, navbar, active navigation, and footer use the primary burgundy. */
-header,
-footer,
-[class~="bg-[#06101e]"],
-[class~="bg-[#050e1a]"] {
-  background-color: var(--color-primary) !important;
+/* Deep navy-purple sections, dark cards, auth views and footer. */
+[class~="bg-[#071426]"], [class~="bg-[#0a192b]"], [class~="bg-[#0a1729]"],
+[class~="bg-[#0b1a2d]"], [class~="bg-[#142b45]"], [class~="bg-[#10213a]"],
+[class~="bg-[#10233a]"], [class~="bg-[#18304a]"], [class~="bg-[#06101e]"],
+[class~="bg-[#050e1a]"], [class~="bg-slate-900"], [class~="bg-slate-950"],
+[class~="bg-black"] {
+  background-color: var(--color-bg-dark) !important;
+  color: var(--color-white);
+}
+[class~="bg-[#10213a]"], [class~="bg-[#10233a]"], [class~="bg-[#18304a]"] {
+  background-color: var(--color-surface-dark) !important;
+}
+header, footer {
+  background-color: var(--color-bg-dark) !important;
   color: var(--color-white) !important;
 }
-header *,
-footer * {
-  border-color: rgba(250, 250, 249, 0.22);
-}
-header [class*="text-slate-"],
-footer [class*="text-slate-"],
-header [class*="text-emerald-"],
-footer [class*="text-emerald-"],
-header [class*="text-indigo-"],
-footer [class*="text-indigo-"] {
-  color: var(--color-white) !important;
-}
-nav button[class~="bg-indigo-600"],
-nav button[class~="bg-emerald-600"],
-nav button[class~="bg-emerald-500"] {
-  background-color: var(--color-primary) !important;
-  color: var(--color-white) !important;
+header *, footer * { border-color: var(--color-border-dark); }
+header [class*="text-slate-"], footer [class*="text-slate-"],
+header [class*="text-gray-"], footer [class*="text-gray-"] {
+  color: var(--color-text-dark-muted) !important;
 }
 
-/* Primary action buttons and former brand-color buttons. */
-button[class~="bg-indigo-600"],
-button[class~="bg-indigo-500"],
-button[class~="bg-emerald-600"],
-button[class~="bg-emerald-500"],
-button[class~="bg-emerald-400"],
-button[class~="bg-blue-600"],
-button[class~="bg-cyan-500"],
-a[class~="bg-indigo-600"],
-a[class~="bg-emerald-500"],
-a[class~="bg-emerald-400"] {
+/* Preserve dark section text while keeping light-section text accessible. */
+[class~="text-white"] { color: var(--color-white) !important; }
+[class*="bg-[#071426]"] *, [class*="bg-[#0a192b]"] *, [class*="bg-[#0a1729]"] *,
+[class*="bg-[#0b1a2d]"] *, [class*="bg-[#10213a]"] *, [class*="bg-[#10233a]"] *,
+[class*="bg-[#18304a]"] *, [class*="bg-[#050e1a]"] *, [class*="bg-[#06101e]"] *,
+[class~="bg-slate-950"] *, header *, footer * {
+  --tw-text-opacity: 1;
+}
+[class*="bg-[#071426]"] p, [class*="bg-[#0a192b]"] p, [class*="bg-[#0a1729]"] p,
+[class*="bg-[#0b1a2d]"] p, [class*="bg-[#10213a]"] p, [class*="bg-[#10233a]"] p,
+[class*="bg-[#18304a]"] p, [class*="bg-[#050e1a]"] p, [class*="bg-[#06101e]"] p,
+[class~="bg-slate-950"] p, [class*="bg-[#071426]"] [class*="text-slate-"],
+[class*="bg-[#0a192b]"] [class*="text-slate-"], [class*="bg-[#10213a]"] [class*="text-slate-"],
+[class*="bg-[#10233a]"] [class*="text-slate-"], [class*="bg-[#18304a]"] [class*="text-slate-"] {
+  color: var(--color-text-dark-muted) !important;
+}
+h1, h2, h3, h4, h5, h6 { color: inherit; }
+p, label, small, caption, [class*="text-slate-"], [class*="text-gray-"], [class*="text-zinc-"] {
+  color: var(--color-text-muted);
+}
+[class*="text-indigo-"], [class*="text-emerald-"], [class*="text-cyan-"],
+[class*="text-blue-"], [class*="text-teal-"], [class*="text-violet-"],
+[class*="text-purple-"] { color: var(--color-primary) !important; }
+[class~="text-slate-900"], [class~="text-slate-800"], [class~="text-gray-900"],
+[class~="text-gray-800"], [class~="text-[#1C1917]"], [class~="text-[#57534E]"] {
+  color: var(--color-text) !important;
+}
+[class~="text-slate-400"], [class~="text-slate-500"], [class~="text-slate-600"],
+[class~="text-gray-400"], [class~="text-gray-500"] { color: var(--color-text-muted) !important; }
+
+/* Primary buttons, active items, links and legacy brand fills. */
+button[class*="bg-indigo-"], button[class*="bg-blue-"], button[class*="bg-emerald-"],
+button[class*="bg-cyan-"], button[class*="bg-violet-"], button[class*="bg-purple-"],
+a[class*="bg-indigo-"], a[class*="bg-blue-"], a[class*="bg-emerald-"],
+[class~="bg-[#6B2737]"], [class~="bg-[#521D2A]"] {
   background-color: var(--color-primary) !important;
   color: var(--color-white) !important;
   border-color: var(--color-primary) !important;
 }
-button[class~="bg-indigo-600"]:hover,
-button[class~="bg-indigo-500"]:hover,
-button[class~="bg-emerald-600"]:hover,
-button[class~="bg-emerald-500"]:hover,
-button[class~="bg-emerald-400"]:hover,
-button[class~="bg-blue-600"]:hover,
-button[class~="bg-cyan-500"]:hover,
-a[class~="bg-indigo-600"]:hover,
-a[class~="bg-emerald-500"]:hover,
-a[class~="bg-emerald-400"]:hover {
-  background-color: var(--color-primary-hover) !important;
+button[class*="bg-indigo-"]:hover, button[class*="bg-blue-"]:hover,
+button[class*="bg-emerald-"]:hover, button[class*="bg-cyan-"]:hover,
+button[class*="bg-violet-"]:hover, button[class*="bg-purple-"]:hover,
+a[class*="bg-indigo-"]:hover, a[class*="bg-blue-"]:hover,
+[class~="bg-[#6B2737]"]:hover, [class~="bg-[#521D2A]"]:hover {
+  background-color: var(--color-primary-dark) !important;
 }
-button[class*="border-emerald-"],
-button[class*="border-indigo-"],
-button[class*="border-blue-"] {
-  border-color: var(--color-primary) !important;
+nav button[class*="bg-indigo-"], nav button[class*="bg-emerald-"] {
+  background-color: var(--color-primary) !important; color: var(--color-white) !important;
 }
-button[class*="hover:bg-emerald-"]:hover,
-button[class*="hover:bg-indigo-"]:hover,
-button[class*="hover:bg-blue-"]:hover {
-  background-color: var(--color-primary-tint) !important;
-  color: var(--color-primary) !important;
+button[class*="border-indigo-"], button[class*="border-blue-"], button[class*="border-emerald-"],
+button[class*="border-violet-"] { border-color: var(--color-primary) !important; }
+button[class*="hover:bg-indigo-"]:hover, button[class*="hover:bg-blue-"]:hover,
+button[class*="hover:bg-emerald-"]:hover, button[class*="hover:bg-violet-"]:hover {
+  background-color: var(--color-primary-tint) !important; color: var(--color-primary-dark) !important;
+}
+[class*="ring-indigo-"], [class*="ring-blue-"], [class*="ring-emerald-"], [class*="ring-cyan-"] {
+  --tw-ring-color: rgba(99, 102, 241, 0.5) !important;
 }
 
-/* Secondary and tertiary surfaces, including fields, cards, modals and tables. */
-input, select, textarea {
-  color: var(--color-text);
-  border-color: var(--color-border) !important;
-  background-color: var(--color-white);
-}
-[class*="border-slate-"],
-[class*="border-gray-"],
-[class*="border-indigo-"],
-[class*="border-emerald-"],
-[class*="border-cyan-"],
-[class*="border-blue-"],
-[class*="divide-slate-"] {
-  border-color: var(--color-border-light) !important;
-}
-[class*="bg-indigo-50"],
-[class*="bg-indigo-100"],
-[class*="bg-emerald-50"],
-[class*="bg-emerald-100"],
-[class*="bg-cyan-50"],
-[class*="bg-blue-50"],
-[class*="bg-slate-100"],
-[class*="bg-slate-50"] {
-  background-color: var(--color-secondary-tint) !important;
-}
-[class*="bg-red-50"],
-[class*="bg-amber-50"],
-[class*="bg-orange-50"],
-[class*="bg-yellow-50"] {
-  background-color: var(--color-accent-tint) !important;
-}
-
-/* Text hierarchy. Burgundy for headings; warm gray for supporting copy and icons. */
-h1, h2, h3, h4, h5, h6 {
-  color: var(--color-primary);
-}
-p, label, small, caption,
-[class*="text-slate-"],
-[class*="text-gray-"],
-[class*="text-zinc-"] {
-  color: var(--color-secondary);
-}
-[class*="text-indigo-"],
-[class*="text-emerald-"],
-[class*="text-cyan-"],
-[class*="text-blue-"],
-[class*="text-teal-"],
-[class*="text-violet-"],
-[class*="text-purple-"],
-[class*="text-orange-"],
-[class*="text-red-"],
-[class*="text-green-"] {
-  color: var(--color-secondary) !important;
-}
-a, button[class*="text-amber-"], button[class*="text-yellow-"] {
-  color: var(--color-accent);
-}
-button:hover, [role="button"]:hover {
-  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
-}
-button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
-  outline: 3px solid var(--color-accent) !important;
-  outline-offset: 2px;
-  box-shadow: 0 0 0 2px var(--color-bg) !important;
-}
-
-/* Keep text legible on primary surfaces and primary buttons. */
-header h1, header h2, header h3, header p,
-footer h1, footer h2, footer h3, footer p,
-button[class~="bg-indigo-600"] *,
-button[class~="bg-indigo-500"] *,
-button[class~="bg-emerald-600"] *,
-button[class~="bg-emerald-500"] *,
-button[class~="bg-emerald-400"] *,
-button[class~="bg-blue-600"] *,
-a[class~="bg-indigo-600"] *,
-a[class~="bg-emerald-500"] *,
-a[class~="bg-emerald-400"] * {
-  color: var(--color-white) !important;
-}
-
-/* Status notices stay muted and readable in the requested neutral palette. */
-[role="alert"], [role="status"] {
-  border-color: var(--color-border) !important;
-}
-
-/* Final normalization for legacy dark surfaces, gradient banners and white text. */
+/* Cards, tables, modals, dividers and borders. */
+[class*="border-slate-"], [class*="border-gray-"], [class*="border-indigo-"],
+[class*="border-emerald-"], [class*="border-cyan-"], [class*="border-blue-"],
+[class*="border-stone-"], [class*="divide-slate-"] { border-color: var(--color-border) !important; }
 [class*="bg-gradient-to-"] {
-  background-image: linear-gradient(135deg, var(--color-primary-tint), var(--color-secondary-tint)) !important;
+  background-image: linear-gradient(135deg, #4F46E5, #2E1F6B) !important;
 }
-[class~="text-white"] {
-  color: var(--color-text) !important;
+input, select, textarea { border-color: var(--color-border) !important; }
+button:hover, [role="button"]:hover { transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid rgba(99, 102, 241, 0.5) !important; outline-offset: 2px;
 }
-header [class~="text-white"],
-footer [class~="text-white"],
-button[class*="bg-indigo-"] [class~="text-white"],
-button[class*="bg-emerald-"] [class~="text-white"],
-button[class*="bg-blue-"] [class~="text-white"],
-a[class*="bg-indigo-"] [class~="text-white"],
-a[class*="bg-emerald-"] [class~="text-white"] {
-  color: var(--color-white) !important;
-}
-[class*="bg-red-500"],
-[class*="bg-rose-500"],
-[class*="bg-orange-500"],
-[class*="bg-yellow-500"],
-[class*="bg-green-500"],
-[class*="bg-emerald-500"],
-[class*="bg-cyan-500"],
-[class*="bg-blue-500"],
-[class*="bg-indigo-500"],
-[class*="bg-violet-500"],
-[class*="bg-purple-500"] {
-  background-color: var(--color-primary) !important;
-}
-[class*="ring-indigo-"],
-[class*="ring-emerald-"],
-[class*="ring-blue-"],
-[class*="ring-cyan-"] {
-  --tw-ring-color: var(--color-border) !important;
-}
+[role="alert"], [role="status"] { border-color: var(--color-border) !important; }
 
-[class~="text-slate-900"],
-[class~="text-slate-800"],
-[class~="text-gray-900"],
-[class~="text-gray-800"] {
-  color: var(--color-text) !important;
+/* Keep the dashboard welcome banner and primary controls legible. */
+.dashboard-hero {
+  background-color: var(--color-bg-dark) !important;
+  background-image: linear-gradient(135deg, #4F46E5, #2E1F6B) !important;
 }
-
-button[class~="bg-indigo-600"],
-button[class~="bg-indigo-500"],
-button[class~="bg-emerald-600"],
-button[class~="bg-emerald-500"],
-button[class~="bg-emerald-400"],
-button[class~="bg-blue-600"],
-button[class~="bg-cyan-500"],
-a[class~="bg-indigo-600"],
-a[class~="bg-emerald-500"],
-a[class~="bg-emerald-400"] {
-  color: var(--color-white) !important;
-}
-
-[class~="bg-stone-50"] { background-color: var(--color-bg) !important; }
-[class*="border-stone-"] { border-color: var(--color-border-light) !important; }
-
-/* Legacy solid brand fills and logos now use the burgundy primary. */
-[class~="bg-black"],
-[class~="bg-emerald-400"],
-[class~="bg-emerald-500"],
-[class~="bg-emerald-600"],
-[class~="bg-indigo-400"],
-[class~="bg-indigo-500"],
-[class~="bg-indigo-600"],
-[class~="bg-blue-400"],
-[class~="bg-blue-500"],
-[class~="bg-blue-600"],
-[class~="bg-cyan-400"],
-[class~="bg-cyan-500"],
-[class~="bg-violet-500"],
-[class~="bg-purple-500"] {
-  background-color: var(--color-primary) !important;
-}
-[class~="text-[#05251f]"] { color: var(--color-text) !important; }
-[class*="bg-emerald-400/"],
-[class*="bg-emerald-500/"],
-[class*="bg-indigo-400/"],
-[class*="bg-indigo-500/"],
-[class*="bg-cyan-400/"],
-[class*="bg-blue-400/"] {
-  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent) !important;
-}
-[class~="text-[#05251f]"] {
-  color: var(--color-text) !important;
-}
-
-button[class~="bg-indigo-600"],
-button[class~="bg-indigo-500"],
-button[class~="bg-emerald-600"],
-button[class~="bg-emerald-500"],
-button[class~="bg-emerald-400"],
-button[class~="bg-blue-600"],
-button[class~="bg-cyan-500"],
-a[class~="bg-indigo-600"],
-a[class~="bg-emerald-500"],
-a[class~="bg-emerald-400"] {
-  color: var(--color-white) !important;
-}
-
-/* Keep the dashboard welcome banner and primary actions readable on burgundy. */
-.dashboard-hero .text-white,
-.dashboard-hero h1,
-.dashboard-hero p,
-.dashboard-hero button,
-button[class~="bg-[#6B2737]"],
-button[class~="bg-[#521D2A]"] {
-  color: var(--color-white) !important;
-}
-button[class~="bg-[#6B2737]"]:hover {
-  background-color: var(--color-primary-hover) !important;
-}
+.dashboard-hero h1, .dashboard-hero p, .dashboard-hero button { color: var(--color-white) !important; }
+button[class*="bg-indigo-"] *, button[class*="bg-blue-"] *, button[class*="bg-emerald-"] *,
+button[class*="bg-violet-"] *, button[class*="bg-purple-"] *,
+[class~="bg-[#6B2737]"] *, [class~="bg-[#521D2A]"] * { color: var(--color-white) !important; }
