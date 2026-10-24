@@ -327,3 +327,29 @@ html[data-theme="dark"] textarea {
 }
 html[data-theme="dark"] table { color: #e2e8f0; }
 html[data-theme="light"] table { color: #172033; }
+
+/* Explicit contrast for the mobile dashboard brand and bottom navigation. */
+html[data-theme="light"] .pledge-mobile-nav {
+  background: rgba(255,255,255,.97) !important;
+  border-color: #d7dfeb !important;
+}
+html[data-theme="dark"] .pledge-mobile-nav {
+  background: rgba(11,18,32,.98) !important;
+  border-color: #475569 !important;
+}
+html[data-theme="dark"] .pledge-mobile-nav button {
+  color: #e2e8f0 !important;
+}
+html[data-theme="dark"] .pledge-mobile-nav button[class*="bg-[#F5EDEF]"] {
+  background: #312e81 !important;
+  color: #ffffff !important;
+}
+html[data-theme="light"] .pledge-mobile-nav button {
+  color: #334155;
+}
+html[data-theme="light"] .pledge-mobile-nav button[class*="bg-[#F5EDEF]"] {
+  color: #6B2737 !important;
+}
+html[data-theme="dark"] header [aria-label="PLEDGE INVEST home"] span.text-slate-900 {
+  color: #f8fafc !important;
+}
