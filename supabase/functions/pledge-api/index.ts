@@ -108,7 +108,38 @@ if(!account.referral_code){const code=makeReferralCode(user.userId);const patche
 const {items:globals}=await db.list<any>('pledge_investors',{limit:200});let global=globals.find((x:any)=>x.user_id===user.userId)||globals.find((x:any)=>x.email&&user.email&&String(x.email).toLowerCase()===String(user.email).toLowerCase());const globalRecord={investor_id:global?.investor_id||`PI-${user.userId.slice(0,8).toUpperCase()}`,user_id:user.userId,name:account.name||user.name||global?.name||'',email:account.email||user.email||global?.email||'',balance:Number(account.balance||0),invested:Number(account.invested||0),profit_earned:Number(account.profit_earned||0),status:account.status||global?.status||'active',referral_code:account.referral_code||makeReferralCode(user.userId),referred_by:account.referred_by||global?.referred_by||'',created_at:account.created_at||global?.created_at||Date.now(),updated_at:Date.now()};if(global){await db.update('pledge_investors',[{id:global.id,record:globalRecord}]);}else{const [id]=await db.add('pledge_investors',[globalRecord]);if(!id)throw new Error('Unable to create shared investor record');global={...globalRecord,id};}
 return {...account,global_id:global.id,investor_id:global.investor_id,referral_code:account.referral_code||globalRecord.referral_code,referred_by:account.referred_by||''};}
 async function payReferralOnFirstDeposit(depositor:any,depositAmount:number){const settings=await getSettings();const pct=settings.referralPercent;if(pct<=0||!depositor?.user_id)return null;const {items:accounts}=await db.list<any>(`pledge_account_${depositor.user_id}`,{limit:1});const acc:any=accounts[0];if(!acc?.referred_by||acc.referral_rewarded)return null;const {items:tx}=await db.list<any>(`pledge_transactions_${depositor.user_id}`,{limit:100});const priorDeposits=(tx||[]).filter((t:any)=>t.type==='Deposit'&&t.status==='Completed');if(priorDeposits.length>0)return null;const code=String(acc.referred_by).toUpperCase();const {items:investors}=await db.list<any>('pledge_investors',{limit:200});const referrer=investors.find((x:any)=>String(x.referral_code||'').toUpperCase()===code);if(!referrer?.user_id||referrer.user_id===depositor.user_id)return null;const reward=Number((Number(depositAmount)*pct/100).toFixed(2));if(reward<=0)return null;const {items:refAccounts}=await db.list<any>(`pledge_account_${referrer.user_id}`,{limit:1});const refAcc=refAccounts[0];if(!refAcc?.id)return null;const rewardRef=`${pct}% of first deposit · ${depositor.email||depositor.investor_id}`;const {data:creditData,error:creditError}=await supabase.rpc('pledge_credit_operation',{p_user_id:referrer.user_id,p_amount:reward,p_idempotency_key:`referral-first-deposit-${depositor.user_id}`,p_transaction_type:'Referral Bonus',p_reference:rewardRef,p_metadata:{referred_user_id:depositor.user_id,percent:pct},p_admin_email:null});if(creditError)throw creditError;const nextBal=Number(creditData?.balance??(Number(refAcc.balance||0)+reward));await db.update(`pledge_account_${depositor.user_id}`,[{id:acc.id,record:{...acc,referral_rewarded:true,updated_at:Date.now()}}]);await db.add('pledge_referrals',[{referrer_user_id:referrer.user_id,referrer_code:code,referred_user_id:depositor.user_id,referred_email:depositor.email||'',deposit_amount:Number(depositAmount),reward,percent:pct,created_at:Date.now()}]);await alertInvestors({userIds:[String(referrer.user_id)],emails:[String(referrer.email||'')],title:'Referral reward credited',body:`You earned ${reward.toLocaleString()} (${pct}% of a referred investor's first deposit).`,kind:'referral'});await audit('Referral reward',`${referrer.investor_id} +${reward} from ${depositor.email||depositor.investor_id}`);return {reward,referrer:referrer.investor_id,percent:pct};}
-export async function dailyInvestorProfit(){const {items:settingsRows}=await db.list<any>('pledge_settings',{limit:1});const settings=settingsRows[0];const rate=Number(settings?.dailyProfitRate||0);if(!settings?.dailyProfitEnabled||rate<=0)return {statusCode:200,updated:0};const {items:users}=await db.list<any>('pledge_investors',{limit:200});const day=new Date().toISOString().slice(0,10);let updated=0,failed=0;for(const u of users){const invested=Number(u.invested||0);if(invested<=0||!u.user_id)continue;const profit=Number((invested*rate/100).toFixed(2));if(profit<=0)continue;try{const {data,error}=await supabase.rpc('pledge_credit_operation',{p_user_id:String(u.user_id),p_amount:profit,p_idempotency_key:'daily-profit-'+day+'-'+String(u.user_id),p_transaction_type:'Daily Profit',p_reference:rate+'% daily ledger accrual',p_metadata:{rate,day},p_admin_email:null});if(error)throw error;if(!data?.idempotentReplay)updated++;}catch(e){failed++;}}await audit('Daily profit applied',day+' · '+updated+' updated · '+failed+' failed at '+rate+'%');return {statusCode:200,updated,failed,day};}
+export async function dailyInvestorProfit(){
+ const {items:settingsRows}=await db.list<any>('pledge_settings',{limit:1});
+ const settings=settingsRows[0];
+ const rate=Number(settings?.dailyProfitRate||0);
+ if(!settings?.dailyProfitEnabled||!Number.isFinite(rate)||rate<=0||rate>100)return {statusCode:200,updated:0,failed:0,skipped:true};
+ const users:any[]=[];
+ for(let offset=0;;offset+=1000){
+  const {data,error}=await supabase.from('pledge_records').select('id,record').eq('table_name','pledge_investors').order('created_at',{ascending:true}).range(offset,offset+999);
+  if(error)throw error;
+  const page=(data||[]).map((r:any)=>({...r.record,id:r.id}));
+  users.push(...page);
+  if(page.length<1000)break;
+ }
+ const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Africa/Lagos',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+ const values=Object.fromEntries(parts.map(p=>[p.type,p.value]));
+ const day=`${values.year}-${values.month}-${values.day}`;
+ let updated=0,failed=0;
+ for(const u of users){
+  if(u.status==='inactive'||u.status==='suspended')continue;
+  const invested=Number(u.invested||0);
+  if(!Number.isFinite(invested)||invested<=0||!u.user_id)continue;
+  const profit=Number((invested*rate/100).toFixed(2));
+  if(!Number.isFinite(profit)||profit<=0)continue;
+  try{
+   const {data,error}=await supabase.rpc('pledge_credit_operation',{p_user_id:String(u.user_id),p_amount:profit,p_idempotency_key:'daily-profit-'+day+'-'+String(u.user_id),p_transaction_type:'Daily Profit',p_reference:rate+'% daily ledger accrual',p_metadata:{rate,day},p_admin_email:null});
+   if(error)throw error;
+   if(!data?.idempotentReplay)updated++;
+  }catch(e){failed++;}
+ }
+ await audit('Daily profit applied',day+' · '+updated+' updated · '+failed+' failed at '+rate+'%');
+ return {statusCode:200,updated,failed,day,totalEligible:users.length};
+}
 export const handler=router({
 'GET /api/_healthcheck':[async()=>json({message:'Success'})],
 'POST /api/admin/login':[...adminGuard,async({body})=>{const code=(body as any)?.code;let configured='';try{configured=String(await secrets.readSecret('PLEDGE_ADMIN_AUTH_CODE')||'').trim();}catch{configured='';}if(!configured)return json({error:'Admin authentication code is not configured on the server'},500);if(typeof code!=='string'||code.trim()!==configured)return json({error:'Unauthorized'},401);await audit('Admin login','Administrator authenticated');return json({success:true});}],
