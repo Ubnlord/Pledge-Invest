@@ -41,7 +41,7 @@ const planSync = readFileSync('supabase/migrations/202610240004_sync_investment_
 const scheduler = readFileSync('.github/workflows/daily-investor-profit.yml', 'utf8');
 assert.match(api, /POST \/api\/internal\/cron\/daily-profit/, 'scheduled profit endpoint must exist');
 assert.match(api, /PLEDGE_CRON_SECRET/, 'scheduled profit endpoint must be secret protected');
-assert.match(scheduler, /cron: "0 23 \\* \\* \\*"/, 'daily scheduler must run at midnight Africa/Lagos time');
+assert.match(scheduler, /cron: "0 23 \* \* \*"/, 'daily scheduler must run at midnight Africa/Lagos time');
 assert.match(scheduler, /secrets\.PLEDGE_CRON_SECRET/, 'scheduler must use a GitHub Actions secret, not a committed credential');
 assert.match(planSync, /\('starter', 'Capital Preservation Plan'/, 'plan sync must preserve the existing starter plan ID');
 assert.match(planSync, /\('growth', 'Fixed Income Plan'/, 'plan sync must preserve the existing growth plan ID');
