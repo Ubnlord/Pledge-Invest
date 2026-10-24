@@ -13,7 +13,7 @@ const languages = [
 ];
 
 type Dictionary = Record<string, string>;
-const originalTextNodes = new WeakMap<Text, string>();
+const originalTextNodes = new WeakMap<Text, { original: string; rendered: string }>();
 const originalAttributes = new WeakMap<Element, Map<string, string>>();
 const dictionaries: Record<string, Dictionary> = {
   es: {
@@ -195,14 +195,16 @@ export default function LanguageTranslator({ dark = false }: { dark?: boolean })
     const translateText = (node: Text) => {
       const parent = node.parentElement;
       if (!parent || parent.closest('script,style,noscript,textarea,input,select,option,[contenteditable="true"]')) return;
-      const original = originalTextNodes.get(node) ?? node.data;
-      originalTextNodes.set(node, original);
+      const tracked = originalTextNodes.get(node);
+      // React may reuse a text node for a different testimonial or other dynamic content.
+      // If the node no longer contains our last rendered translation, treat it as new source text.
+      const original = tracked && node.data === tracked.rendered ? tracked.original : node.data;
       const trimmed = original.trim();
       if (!trimmed) return;
       const translated = dict[trimmed] || trimmed;
-      if (node.data !== original.replace(trimmed, translated)) {
-        node.data = original.replace(trimmed, translated);
-      }
+      const rendered = original.replace(trimmed, translated);
+      originalTextNodes.set(node, { original, rendered });
+      if (node.data !== rendered) node.data = rendered;
     };
     const translateAttributes = (element: Element) => {
       for (const attr of ['placeholder', 'aria-label', 'title']) {
