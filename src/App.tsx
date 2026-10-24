@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode, type FormEvent } from 'react';
 import { api, auth, notifications as browserNotifications } from './lib/platform';
 import Profile from './Profile';
-import { ArrowUpFromLine, BarChart3, Bell, Check, CircleDollarSign, Copy, CreditCard, FileText, Gift, Headphones, Home, LineChart, LogOut, Menu, PieChart, Plus, RefreshCw, Search, Send, Settings, ShieldCheck, TrendingUp, User, Users, Wallet, X } from 'lucide-react';
+import { ArrowUpFromLine, BarChart3, Bell, Check, CircleDollarSign, Copy, CreditCard, FileText, Gift, Headphones, Home, LineChart, LogOut, Menu, Plus, RefreshCw, Search, Send, Settings, ShieldCheck, TrendingUp, Users, Wallet, X } from 'lucide-react';
 
 type Plan={name:string;min:number;max:number;rate:string;term:string};
 const defaultPlans:Plan[]=[{name:'Starter',min:50,max:499,rate:'3.5%',term:'30 days'},{name:'Growth',min:500,max:4999,rate:'6.5%',term:'60 days'},{name:'Premium',min:5000,max:25000,rate:'10%',term:'90 days'}];
@@ -29,7 +29,7 @@ export default function App(){const [user,setUser]=useState<any>(null);const [ta
  const markNotifRead=async(id:string)=>{try{await api.post(`/api/me/notifications/${id}/read`);setNotifications(list=>list.map(n=>n.id===id?{...n,read:true}:n));}catch{}};
  const enablePushAlerts=async()=>{try{await browserNotifications.subscribe();setNotice('Browser alerts enabled. You will receive push notifications for important account updates.');}catch{setNotice('Unable to enable browser alerts. Check notification permission in your browser settings.');}};
  const signOut=async()=>{await auth.signOut();setUser(null);setAccount(null);setSummary({});setTx([]);setTab('Dashboard');};
- const balance=Number(account?.balance||0),invested=Number(account?.invested||0),total=balance+invested;
+ const balance=Number(account?.balance||0),invested=Number(account?.invested||0);
  const earningsHistory=tx.filter(t=>/profit|interest|earning|payout/i.test(t.type)&&Number(t.amount||0)>0).sort((a,b)=>Number(a.created_at||0)-Number(b.created_at||0)).slice(-6);
  const maxEarning=Math.max(1,...earningsHistory.map(t=>Number(t.amount||0)));
  const usd=(value:number)=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}).format(Number.isFinite(value)?value:0);
@@ -199,4 +199,3 @@ function AuthPage({onSuccess,onHome,initialMode}:{onSuccess:()=>Promise<void>;on
 
 function Info({title,value,icon}:{title:string;value:string;icon:ReactNode}){return <div className='rounded-2xl border bg-white p-6 shadow-sm'><div className='flex items-center gap-3'><div className='rounded-xl bg-indigo-50 p-2 text-indigo-600'>{icon}</div><span className='text-sm font-semibold text-slate-500'>{title}</span></div><div className='mt-5 break-words text-xl font-black'>{value}</div></div>}
 function Empty({title,text}:{title:string;text:string}){return <div className='rounded-2xl border border-dashed bg-slate-50 p-8 text-center'><div className='font-black'>{title}</div><div className='mt-2 text-sm text-slate-500'>{text}</div></div>}
-function Doc({title,meta}:{title:string;meta:string}){return <div className='flex items-center gap-4 rounded-2xl border bg-white p-5 shadow-sm'><div className='rounded-xl bg-indigo-50 p-3 text-indigo-600'><FileText size={20}/></div><div><div className='font-bold'>{title}</div><div className='text-xs text-slate-500'>{meta}</div></div></div>}
