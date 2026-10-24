@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 concurrency:
   group: pledge-daily-investor-profit
@@ -18,30 +19,30 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Require scheduler secret
-        env:
-          PLEDGE_CRON_SECRET: ${{ secrets.PLEDGE_CRON_SECRET }}
-        run: |
-          if [ -z "$PLEDGE_CRON_SECRET" ]; then
-            echo "::error::Configure PLEDGE_CRON_SECRET in both GitHub Actions secrets and Supabase Edge Function secrets."
-            exit 1
-          fi
-      - name: Run daily profit accrual
-        env:
-          PLEDGE_CRON_SECRET: ${{ secrets.PLEDGE_CRON_SECRET }}
-        run: |
-          set -euo pipefail
-          response_file="$(mktemp)"
-          status="$(curl --silent --show-error --max-time 120 \
-            --output "$response_file" --write-out '%{http_code}' \
-            --request POST \
-            --header "x-cron-secret: $PLEDGE_CRON_SECRET" \
-            --header "content-type: application/json" \
-            --data '{}' \
-            "https://xypcqtqmekrjgytivmsm.supabase.co/functions/v1/pledge-api/api/internal/cron/daily-profit")"
-          cat "$response_file"
-          if [ "$status" -lt 200 ] || [ "$status" -ge 300 ]; then
-            echo "::error::Daily profit endpoint returned HTTP $status"
-            exit 1
-          fi
-          node -e 'const fs=require("fs"); const r=JSON.parse(fs.readFileSync(process.argv[1],"utf8")); if(Number(r.failed||0)>0) { console.error("One or more profit credits failed; inspect the response and financial ledger."); process.exit(1); } console.log(r.skipped ? "Daily profit is disabled; no credits were applied." : `Accrual complete for ${r.day}: ${r.updated} credits, ${r.failed} failures.`);' "$response_file"
+      - name: Run daily profit accrual using GitHub OIDC
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const token = await core.getIDToken("pledge-investor-profit-scheduler");
+            const response = await fetch(
+              "https://xypcqtqmekrjgytivmsm.supabase.co/functions/v1/pledge-api/api/internal/cron/daily-profit",
+              {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+                body: "{}",
+              },
+            );
+            const result = await response.json();
+            core.info(JSON.stringify(result));
+            if (!response.ok) {
+              core.setFailed(`Daily profit endpoint returned HTTP ${response.status}`);
+            } else if (Number(result.failed || 0) > 0) {
+              core.setFailed("One or more profit credits failed; inspect the response and financial ledger.");
+            } else if (result.skipped) {
+              core.info("Daily profit is disabled; no credits were applied.");
+            } else {
+              core.info(`Accrual complete for ${result.day}: ${result.updated} credits, ${result.failed} failures.`);
+            }
