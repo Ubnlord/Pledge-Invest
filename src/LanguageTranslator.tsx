@@ -40,8 +40,6 @@ const dictionaries: Record<string, Dictionary> = {
     "A clearer way to manage your digital assets": "Una forma más clara de gestionar tus activos digitales",
     "YOUR ACCOUNT, AT A GLANCE": "TU CUENTA DE UN VISTAZO",
     "LIVE MARKET": "MERCADO EN VIVO",
-    "Login": "Iniciar sesión",
-    "Create Account": "Crear cuenta",
   },
   fr: {
     'Login': 'Connexion', 'Log In': 'Connexion', 'Sign In': 'Se connecter',
@@ -67,8 +65,6 @@ const dictionaries: Record<string, Dictionary> = {
     "A clearer way to manage your digital assets": "Une façon plus claire de gérer vos actifs numériques",
     "YOUR ACCOUNT, AT A GLANCE": "VOTRE COMPTE EN UN COUP D’ŒIL",
     "LIVE MARKET": "MARCHÉ EN DIRECT",
-    "Login": "Connexion",
-    "Create Account": "Créer un compte",
   },
   it: {
     'Login': 'Accedi', 'Log In': 'Accedi', 'Sign In': 'Accedi', 'Create Account': 'Crea account',
@@ -93,7 +89,6 @@ const dictionaries: Record<string, Dictionary> = {
     "A clearer way to manage your digital assets": "Un modo più chiaro per gestire i tuoi asset digitali",
     "YOUR ACCOUNT, AT A GLANCE": "IL TUO ACCOUNT A COLPO D’OCCHIO",
     "LIVE MARKET": "MERCATO IN TEMPO REALE",
-    "Login": "Accedi",
     "Create Account": "Crea account",
   },
   pt: {
@@ -119,7 +114,6 @@ const dictionaries: Record<string, Dictionary> = {
     "A clearer way to manage your digital assets": "Uma forma mais clara de gerir os seus ativos digitais",
     "YOUR ACCOUNT, AT A GLANCE": "A SUA CONTA NUM RELANCE",
     "LIVE MARKET": "MERCADO EM TEMPO REAL",
-    "Login": "Entrar",
     "Create Account": "Criar conta",
   },
   nl: {
@@ -145,7 +139,6 @@ const dictionaries: Record<string, Dictionary> = {
     "A clearer way to manage your digital assets": "Een duidelijkere manier om je digitale bezittingen te beheren",
     "YOUR ACCOUNT, AT A GLANCE": "JE ACCOUNT IN ÉÉN OOGOPSLAG",
     "LIVE MARKET": "LIVE MARKT",
-    "Login": "Inloggen",
     "Create Account": "Account aanmaken",
   },
   'zh-CN': {
@@ -170,7 +163,6 @@ const dictionaries: Record<string, Dictionary> = {
     "A clearer way to manage your digital assets": "更清晰地管理您的数字资产",
     "YOUR ACCOUNT, AT A GLANCE": "一览您的账户",
     "LIVE MARKET": "实时市场",
-    "Login": "登录",
     "Create Account": "创建账户",
   },
   'zh-TW': {
@@ -195,7 +187,6 @@ const dictionaries: Record<string, Dictionary> = {
     "A clearer way to manage your digital assets": "更清晰地管理您的數位資產",
     "YOUR ACCOUNT, AT A GLANCE": "一覽您的帳戶",
     "LIVE MARKET": "即時市場",
-    "Login": "登入",
     "Create Account": "建立帳戶",
   },
   hi: {
@@ -221,7 +212,6 @@ const dictionaries: Record<string, Dictionary> = {
     "A clearer way to manage your digital assets": "अपनी डिजिटल संपत्तियों को प्रबंधित करने का बेहतर तरीका",
     "YOUR ACCOUNT, AT A GLANCE": "एक नज़र में आपका खाता",
     "LIVE MARKET": "लाइव बाज़ार",
-    "Login": "लॉग इन",
     "Create Account": "खाता बनाएं",
   },
 };
