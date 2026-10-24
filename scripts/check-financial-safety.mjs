@@ -13,6 +13,8 @@ assert.match(api, /daily-profit-'\+day\+'-'/, 'daily profit must use a per-user,
 assert.match(api, /'DELETE \/api\/admin\/users\/:id'.*status:'inactive'/s, 'admin delete action must suspend, not erase, investor records');
 assert.match(api, /This investor account is inactive\. Contact support for review\./, 'inactive investor accounts must be blocked from authenticated API routes');
 assert.match(api, /Inactive investor accounts cannot receive manual credits/, 'inactive investors must not receive manual credits');
+assert.match(api, /Daily profit rate must be between 0 and 100 percent/, 'daily profit configuration must be validated server-side');
+assert.match(api, /Referral percentage must be between 0 and 100 percent/, 'referral configuration must be validated server-side');
 assert.doesNotMatch(api, /'DELETE \/api\/admin\/users\/:id'.*db\.delete\('pledge_investors'/s, 'admin delete route must not physically delete investor history');
 
 assert.match(sql, /create table if not exists public\.pledge_financial_ledger/i, 'financial ledger table must exist');
