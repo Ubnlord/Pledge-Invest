@@ -137,7 +137,7 @@ export default function Profile({
 
   if (busy) {
     return (
-      <Page title="Profile" subtitle="Manage your investor account profile, preferences and security.">
+      <Page title="Account settings" subtitle="Manage your investor account profile, preferences and security.">
         <div className="rounded-2xl border bg-white p-8 text-slate-500">Loading profile...</div>
       </Page>
     );
