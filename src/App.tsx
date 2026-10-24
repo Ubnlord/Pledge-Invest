@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState, type ReactNode, type FormEvent } from 'react';
-import { api, auth, notifications } from './lib/platform';
+import { useEffect, useState, type ReactNode, type FormEvent } from 'react';
+import { api, auth, notifications as browserNotifications } from './lib/platform';
 import Profile from './Profile';
 import TradingViewTicker from './TradingViewTicker';
 import { ArrowUpFromLine, BarChart3, Bell, Check, CircleDollarSign, Copy, CreditCard, FileText, Gift, Headphones, Home, LineChart, LogOut, Menu, PieChart, Plus, RefreshCw, Search, Send, Settings, ShieldCheck, TrendingUp, User, Users, Wallet, X } from 'lucide-react';
@@ -28,8 +28,7 @@ export default function App(){const [user,setUser]=useState<any>(null);const [ta
  const copyReferralLink=async()=>{if(!referral?.code)return;const link=`${window.location.origin}${window.location.pathname}?ref=${referral.code}`;try{await navigator.clipboard.writeText(link);setCopiedRef(true);setNotice('Referral link copied.');setTimeout(()=>setCopiedRef(false),2000);}catch{setNotice('Unable to copy link.');}};
  const applyReferralCode=async()=>{const code=refCodeInput.trim().toUpperCase();if(!code){setNotice('Enter a referral code.');return;}try{await api.post('/api/me/referral/attach',{code});setNotice('Referral code linked to your account.');setRefCodeInput('');await loadReferral();}catch(e:any){setNotice(e?.response?.data?.error||'Unable to apply referral code.');}};
  const markNotifRead=async(id:string)=>{try{await api.post(`/api/me/notifications/${id}/read`);setNotifications(list=>list.map(n=>n.id===id?{...n,read:true}:n));}catch{}};
- const enablePushAlerts=async()=>{try{await notifications.subscribe();setNotice('Browser alerts enabled. You will receive push notifications for important account updates.');}catch{setNotice('Unable to enable browser alerts. Check notification permission in your browser settings.');}};
- const signIn=async()=>{setNotice('Please use email and password to sign in.');};
+ const enablePushAlerts=async()=>{try{await browserNotifications.subscribe();setNotice('Browser alerts enabled. You will receive push notifications for important account updates.');}catch{setNotice('Unable to enable browser alerts. Check notification permission in your browser settings.');}};
  const signOut=async()=>{await auth.signOut();setUser(null);setAccount(null);setTx([]);setTab('Dashboard');};
  const balance=Number(account?.balance||0),invested=Number(account?.invested||0),total=balance+invested;
  const earningsHistory=tx.filter(t=>/profit|interest|earning|payout/i.test(t.type)&&Number(t.amount||0)>0).sort((a,b)=>Number(a.created_at||0)-Number(b.created_at||0)).slice(-6);
