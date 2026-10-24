@@ -14,6 +14,8 @@ assert.match(api, /timeZone:'Africa\/Lagos'/, 'daily profit idempotency date mus
 assert.match(api, /daily-profit-'\+day\+'-'/, 'daily profit must use a per-user, per-day idempotency key');
 assert.match(api, /'DELETE \/api\/admin\/users\/:id'.*status:'inactive'/s, 'admin delete action must suspend, not erase, investor records');
 assert.match(api, /This investor account is inactive\. Contact support for review\./, 'inactive investor accounts must be blocked from authenticated API routes');
+assert.match(api, /contains\("record", \{ user_id: u\.id \}\)/, 'authenticated routes must check the investor mirror status as well as the wallet status');
+assert.match(api, /String\(u\.status\|\|'active'\)\.toLowerCase\(\)!=='active'/, 'daily profit must skip every non-active investor status');
 assert.match(api, /Inactive investor accounts cannot receive manual credits/, 'inactive investors must not receive manual credits');
 assert.match(api, /Status must be active, inactive or suspended/, 'investor status changes must use the supported lifecycle states');
 assert.match(api, /Daily profit rate must be between 0 and 100 percent/, 'daily profit configuration must be validated server-side');
