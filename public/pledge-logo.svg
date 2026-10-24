@@ -1,1 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 110" role="img" aria-label="PLEDGE INVEST"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2563ff"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs><g fill="url(#g)"><path d="M18 12h49c27 0 43 14 43 37S94 87 67 87H42v15H18V12zm24 22v31h25c13 0 20-5 20-16s-7-15-20-15H42z"/><path d="M82 99 170 11l-6 31-30 0 13 13-49 49z"/><path d="M121 99 166 54v48h-24V79l-21 20z"/></g><text x="198" y="70" font-family="Arial,Helvetica,sans-serif" font-size="43" font-weight="500" letter-spacing="1.5" fill="#fff">PLEDGE INVEST</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 360" role="img" aria-label="PLEDGE INVEST">
+<defs><linearGradient id="brand" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2563ff"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs>
+<g transform="translate(18 10)" stroke-linecap="round" stroke-linejoin="round">
+<path d="M190 15 C145 49 92 68 34 77 L34 177 C34 247 91 298 172 333 C253 298 310 247 310 177 L310 77 C252 68 199 49 190 15Z" fill="none" stroke="url(#brand)" stroke-width="20"/>
+<g fill="url(#brand)"><rect x="93" y="214" width="36" height="64" rx="4"/><rect x="151" y="187" width="36" height="91" rx="4"/><rect x="209" y="153" width="36" height="125" rx="4"/></g>
+<path d="M78 211 L139 154 L167 174 L245 83" fill="none" stroke="url(#brand)" stroke-width="19"/>
+<path d="M215 76 L270 62 L258 117Z" fill="url(#brand)"/>
+</g>
+<text x="370" y="175" fill="#fff" font-family="Arial,Helvetica,sans-serif" font-size="122" font-weight="600" letter-spacing="2">PLEDGE INVEST</text>
+<text x="470" y="253" fill="#6257ff" font-family="Arial,Helvetica,sans-serif" font-size="43" font-weight="600" letter-spacing="14">INVESTMENT PLATFORM</text>
+</svg>
