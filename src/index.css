@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes pledge-market-ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.market-ticker-track { animation: pledge-market-ticker-scroll 55s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .market-ticker-track { animation: none; } }
+
+
 /* Pledge Invest — Violet + Dark Navy palette */
 :root {
   --color-primary: #6366F1;
