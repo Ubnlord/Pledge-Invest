@@ -16,7 +16,7 @@ type Dictionary = Record<string, string>;
 const originalTextNodes = new WeakMap<Text, string>();
 const originalAttributes = new WeakMap<Element, Map<string, string>>();
 const dictionaries: Record<string, Dictionary> = {
-  es: {,
+  es: {
     'Login': 'Iniciar sesión', 'Log In': 'Iniciar sesión', 'Sign In': 'Iniciar sesión',
     'Create Account': 'Crear cuenta', 'Get Started': 'Comenzar', 'Learn More': 'Más información',
     'Home': 'Inicio', 'About Us': 'Sobre nosotros', 'About': 'Acerca de', 'Contact Us': 'Contáctanos',
@@ -41,7 +41,7 @@ const dictionaries: Record<string, Dictionary> = {
     "YOUR ACCOUNT, AT A GLANCE": "TU CUENTA DE UN VISTAZO",
     "LIVE MARKET": "MERCADO EN VIVO",
   },
-  fr: {,
+  fr: {
     'Login': 'Connexion', 'Log In': 'Connexion', 'Sign In': 'Se connecter',
     'Create Account': 'Créer un compte', 'Get Started': 'Commencer', 'Learn More': 'En savoir plus',
     'Home': 'Accueil', 'About Us': 'À propos', 'About': 'À propos', 'Contact Us': 'Nous contacter',
@@ -66,7 +66,7 @@ const dictionaries: Record<string, Dictionary> = {
     "YOUR ACCOUNT, AT A GLANCE": "VOTRE COMPTE EN UN COUP D’ŒIL",
     "LIVE MARKET": "MARCHÉ EN DIRECT",
   },
-  it: {,
+  it: {
     'Login': 'Accedi', 'Log In': 'Accedi', 'Sign In': 'Accedi', 'Create Account': 'Crea account',
     'Get Started': 'Inizia', 'Learn More': 'Scopri di più', 'Home': 'Home', 'About Us': 'Chi siamo',
     'About': 'Informazioni', 'Contact Us': 'Contattaci', 'Contact': 'Contatti', 'Our Plans': 'I nostri piani',
@@ -90,7 +90,7 @@ const dictionaries: Record<string, Dictionary> = {
     "YOUR ACCOUNT, AT A GLANCE": "IL TUO ACCOUNT A COLPO D’OCCHIO",
     "LIVE MARKET": "MERCATO IN TEMPO REALE",
   },
-  pt: {,
+  pt: {
     'Login': 'Entrar', 'Log In': 'Entrar', 'Sign In': 'Iniciar sessão', 'Create Account': 'Criar conta',
     'Get Started': 'Começar', 'Learn More': 'Saiba mais', 'Home': 'Início', 'About Us': 'Sobre nós',
     'About': 'Sobre', 'Contact Us': 'Fale connosco', 'Contact': 'Contacto', 'Our Plans': 'Os nossos planos',
@@ -114,7 +114,7 @@ const dictionaries: Record<string, Dictionary> = {
     "YOUR ACCOUNT, AT A GLANCE": "A SUA CONTA NUM RELANCE",
     "LIVE MARKET": "MERCADO EM TEMPO REAL",
   },
-  nl: {,
+  nl: {
     'Login': 'Inloggen', 'Log In': 'Inloggen', 'Sign In': 'Aanmelden', 'Create Account': 'Account aanmaken',
     'Get Started': 'Aan de slag', 'Learn More': 'Meer informatie', 'Home': 'Home', 'About Us': 'Over ons',
     'About': 'Over', 'Contact Us': 'Contact opnemen', 'Contact': 'Contact', 'Our Plans': 'Onze plannen',
@@ -138,7 +138,7 @@ const dictionaries: Record<string, Dictionary> = {
     "YOUR ACCOUNT, AT A GLANCE": "JE ACCOUNT IN ÉÉN OOGOPSLAG",
     "LIVE MARKET": "LIVE MARKT",
   },
-  'zh-CN': {,
+  'zh-CN': {
     'Login': '登录', 'Log In': '登录', 'Sign In': '登录', 'Create Account': '创建账户',
     'Get Started': '立即开始', 'Learn More': '了解更多', 'Home': '首页', 'About Us': '关于我们',
     'About': '关于', 'Contact Us': '联系我们', 'Contact': '联系', 'Our Plans': '我们的计划',
@@ -184,7 +184,7 @@ const dictionaries: Record<string, Dictionary> = {
     "YOUR ACCOUNT, AT A GLANCE": "一覽您的帳戶"
     "LIVE MARKET": "即時市場"
   },
-  hi: {,
+  hi: {
     'Login': 'लॉग इन', 'Log In': 'लॉग इन', 'Sign In': 'साइन इन', 'Create Account': 'खाता बनाएं',
     'Get Started': 'शुरू करें', 'Learn More': 'और जानें', 'Home': 'होम', 'About Us': 'हमारे बारे में',
     'About': 'परिचय', 'Contact Us': 'संपर्क करें', 'Contact': 'संपर्क', 'Our Plans': 'हमारी योजनाएं',
