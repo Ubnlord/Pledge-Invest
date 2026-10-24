@@ -18,6 +18,8 @@ assert.match(api, /contains\("record", \{ user_id: u\.id \}\)/, 'authenticated r
 assert.match(api, /String\(u\.status\|\|'active'\)\.toLowerCase\(\)!=='active'/, 'daily profit must skip every non-active investor status');
 assert.match(api, /Inactive investor accounts cannot receive manual credits/, 'inactive investors must not receive manual credits');
 assert.match(api, /Status must be active, inactive or suspended/, 'investor status changes must use the supported lifecycle states');
+assert.match(api, /Investor has no linked authenticated wallet\. Link and verify the wallet before activation\./, 'legacy investors cannot be activated without an authenticated wallet');
+assert.match(api, /Wallet link required before activation/, 'legacy investor creation must require wallet reconciliation');
 assert.match(api, /Daily profit rate must be between 0 and 100 percent/, 'daily profit configuration must be validated server-side');
 assert.match(api, /Referral percentage must be between 0 and 100 percent/, 'referral configuration must be validated server-side');
 assert.doesNotMatch(api, /'DELETE \/api\/admin\/users\/:id'.*db\.delete\('pledge_investors'/s, 'admin delete route must not physically delete investor history');
