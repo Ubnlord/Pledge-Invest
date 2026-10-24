@@ -38,6 +38,8 @@ assert.match(sql, /revoke all on function public\.pledge_deposit_approve\(uuid,t
 const depositFix = readFileSync('supabase/migrations/202610240005_fail_closed_deposit_approval.sql', 'utf8');
 const depositUnique = readFileSync('supabase/migrations/202610240006_unique_deposit_tx_hash.sql', 'utf8');
 const authLimit = readFileSync('supabase/migrations/202610240007_admin_auth_rate_limit.sql', 'utf8');
+const mirrorAcl = readFileSync('supabase/migrations/202610240008_restrict_mirror_trigger_function.sql', 'utf8');
+assert.match(mirrorAcl, /revoke all on function public\.pledge_sync_investor_mirror\(\) from public, anon, authenticated/i, 'mirror trigger must not be callable as a public RPC');
 assert.match(authLimit, /create table if not exists public\.pledge_admin_login_limits/i, 'admin rate-limit state must persist in the database');
 assert.match(authLimit, /interval '15 minutes'/i, 'admin rate limit must use a bounded cooldown');
 assert.match(depositUnique, /create unique index if not exists pledge_deposit_requests_network_tx_hash_uidx/i, 'same-network transaction hashes must be unique');
