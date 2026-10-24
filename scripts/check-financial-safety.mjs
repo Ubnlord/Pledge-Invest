@@ -28,8 +28,15 @@ assert.match(sql, /create table if not exists public\.pledge_financial_ledger/i,
 assert.match(sql, /unique\(user_id,operation_key\)/i, 'ledger operations must be unique per user and operation key');
 assert.match(sql, /p_amount is null or p_amount<=0 or p_amount<>round\(p_amount,2\)/i, 'financial operations must reject invalid money amounts');
 assert.match(sql, /pg_advisory_xact_lock/i, 'financial operations must serialize concurrent operations');
+assert.match(sql, /p_decision not in \('approved','rejected','cancelled'\)/i, 'withdrawal decisions must use a closed set of states');
+assert.match(sql, /'withdrawal_release'/i, 'withdrawal rejection must record a release operation');
+assert.match(sql, /withdrawal_decision:'\|\|p_operation_key\|\|':'\|\|p_decision/i, 'withdrawal decisions must have deterministic idempotency keys');
 assert.match(sql, /revoke all on function public\.pledge_deposit_approve\(uuid,text\) from public,anon,authenticated/i, 'deposit approval must not be callable by public client roles');
 const depositFix = readFileSync('supabase/migrations/202610240005_fail_closed_deposit_approval.sql', 'utf8');
+const planSync = readFileSync('supabase/migrations/202610240004_sync_investment_plans.sql', 'utf8');
+assert.match(planSync, /\('starter', 'Capital Preservation Plan'/, 'plan sync must preserve the existing starter plan ID');
+assert.match(planSync, /\('growth', 'Fixed Income Plan'/, 'plan sync must preserve the existing growth plan ID');
+assert.match(planSync, /\('premium', 'Balanced Portfolio'/, 'plan sync must preserve the existing premium plan ID');
 assert.match(depositFix, /raise exception 'ACCOUNT_NOT_FOUND'/, 'deposit approval must fail closed if a linked wallet is missing');
 assert.match(depositFix, /raise exception 'INVESTOR_INACTIVE'/, 'deposit approval must reject inactive investors');
 assert.match(depositFix, /for update/i, 'deposit approval must lock the pending request while settling it');
