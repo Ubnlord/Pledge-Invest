@@ -58,7 +58,7 @@ const db = {
   },
 };
 const secrets = { async readSecret(name: string) { return Deno.env.get(name) || ""; } };
-const notifications = { async send({ userIds }: any) { return { sent: 0, failed: (userIds || []).length }; } };
+
 
 function requireAuth(): Middleware {
   return async (ctx) => {
@@ -125,7 +125,7 @@ const adminGuard=[requireAuth(),requireAdminEmailAllowlist(ADMIN_EMAILS)];
 async function validCode(code:unknown){try{const configured=String(await secrets.readSecret('PLEDGE_ADMIN_AUTH_CODE')||'').trim();if(!configured)return false;return typeof code==='string'&&code.trim()===configured;}catch{return false;}}
 
 async function audit(action:string,detail:string){await db.add('pledge_audit',[{action,detail,created_at:Date.now()}]);}
-async function sendPush(userIds:string[],title:string,body:string,data?:Record<string,string>){const ids=[...new Set(userIds.filter(Boolean))];if(!ids.length)return {sent:0,failed:0};try{return await notifications.send({userIds:ids,notification:{title,body,url:'/'},data:data||{source:'pledge-invest'}});}catch{return {sent:0,failed:ids.length};}}
+async function sendPush(userIds:string[],title:string,body:string,data?:Record<string,string>){const ids=[...new Set(userIds.filter(Boolean))];return {sent:0,failed:ids.length,configured:false,reason:'provider_not_configured'};}
 async function sendEmails(emails:string[],subject:string,text:string){const list=[...new Set(emails.map(e=>String(e||'').trim().toLowerCase()).filter(e=>e.includes('@')))];if(!list.length)return {sent:0,failed:0,configured:false};let apiKey='';try{apiKey=String(await secrets.readSecret('RESEND_API_KEY')||'').trim();}catch{apiKey='';}if(!apiKey)return {sent:0,failed:list.length,configured:false};let fromAddr='Pledge Invest <onboarding@resend.dev>';try{const custom=String(await secrets.readSecret('RESEND_FROM_EMAIL')||'').trim();if(custom)fromAddr=custom;}catch{}let sent=0,failed=0;for(const to of list){try{const r=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${apiKey}`,'Content-Type':'application/json'},body:JSON.stringify({from:fromAddr,to:[to],subject,text})});if(r.ok)sent++;else failed++;}catch{failed++;}}return {sent,failed,configured:true};}
 async function alertInvestors(opts:{userIds?:string[];emails?:string[];title:string;body:string;kind?:string}){const [push,email]=await Promise.all([sendPush(opts.userIds||[],opts.title,opts.body,{kind:opts.kind||'alert'}),sendEmails(opts.emails||[],opts.title,opts.body)]);return {push,email};}
 type AccountRecord={user_id:string;name:string;email:string;balance:number;invested:number;profit_earned:number;status:string;created_at:number;updated_at?:number;referral_code?:string;referred_by?:string;referral_rewarded?:boolean};
