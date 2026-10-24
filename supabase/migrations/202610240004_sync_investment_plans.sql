@@ -11,11 +11,11 @@ where active = true;
 insert into public.pledge_investment_plans
   (id, name, min_amount, max_amount, advertised_rate, duration_days, active, terms, updated_at)
 values
-  ('capital-preservation', 'Capital Preservation Plan', 100, 500, 5, 60, true,
+  ('starter', 'Capital Preservation Plan', 100, 500, 5, 60, true,
    '{"return_label":"5% indicative target; not guaranteed"}'::jsonb, now()),
-  ('fixed-income', 'Fixed Income Plan', 500, 1000, 5, 120, true,
+  ('growth', 'Fixed Income Plan', 500, 1000, 5, 120, true,
    '{"return_label":"5% indicative target; not guaranteed"}'::jsonb, now()),
-  ('balanced-portfolio', 'Balanced Portfolio', 1000, 1500, 7, 180, true,
+  ('premium', 'Balanced Portfolio', 1000, 1500, 7, 180, true,
    '{"return_label":"7% indicative target; not guaranteed"}'::jsonb, now()),
   ('global-index', 'Global Index Plan', 1500, 2000, 7, 240, true,
    '{"return_label":"7% indicative target; not guaranteed"}'::jsonb, now()),
