@@ -37,10 +37,15 @@ assert.match(sql, /withdrawal_decision:'\|\|p_operation_key\|\|':'\|\|p_decision
 assert.match(sql, /revoke all on function public\.pledge_deposit_approve\(uuid,text\) from public,anon,authenticated/i, 'deposit approval must not be callable by public client roles');
 const depositFix = readFileSync('supabase/migrations/202610240005_fail_closed_deposit_approval.sql', 'utf8');
 const depositUnique = readFileSync('supabase/migrations/202610240006_unique_deposit_tx_hash.sql', 'utf8');
+const authLimit = readFileSync('supabase/migrations/202610240007_admin_auth_rate_limit.sql', 'utf8');
+assert.match(authLimit, /create table if not exists public\.pledge_admin_login_limits/i, 'admin rate-limit state must persist in the database');
+assert.match(authLimit, /interval '15 minutes'/i, 'admin rate limit must use a bounded cooldown');
 assert.match(depositUnique, /create unique index if not exists pledge_deposit_requests_network_tx_hash_uidx/i, 'same-network transaction hashes must be unique');
 const planSync = readFileSync('supabase/migrations/202610240004_sync_investment_plans.sql', 'utf8');
 const scheduler = readFileSync('.github/workflows/daily-investor-profit.yml', 'utf8');
 assert.match(api, /POST \/api\/internal\/cron\/daily-profit/, 'scheduled profit endpoint must exist');
+assert.match(api, /pledge_admin_auth_attempt/, 'admin authentication must use persistent rate limiting');
+assert.match(api, /Too many attempts\. Wait 15 minutes/, 'admin authentication must return a rate-limit response');
 assert.match(api, /PLEDGE_CRON_SECRET/, 'scheduled profit endpoint must be secret protected');
 assert.match(scheduler, /cron: "0 23 \* \* \*"/, 'daily scheduler must run at midnight Africa/Lagos time');
 assert.match(scheduler, /secrets\.PLEDGE_CRON_SECRET/, 'scheduler must use a GitHub Actions secret, not a committed credential');
