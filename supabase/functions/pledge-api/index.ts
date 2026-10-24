@@ -7,7 +7,7 @@ const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const supabase = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
 const GITHUB_ACTIONS_JWKS = createRemoteJWKSet(new URL("https://token.actions.githubusercontent.com/.well-known/jwks"));
 async function isTrustedProfitScheduler(request: Request) {
-  const token = request.headers.get("authorization")?.replace(/^Bearer\\s+/i, "");
+  const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
   if (!token) return false;
   try {
     const { payload } = await jwtVerify(token, GITHUB_ACTIONS_JWKS, {
