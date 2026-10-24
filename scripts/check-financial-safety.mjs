@@ -50,9 +50,12 @@ const scheduler = readFileSync('.github/workflows/daily-investor-profit.yml', 'u
 assert.match(api, /POST \/api\/internal\/cron\/daily-profit/, 'scheduled profit endpoint must exist');
 assert.match(api, /pledge_admin_auth_attempt/, 'admin authentication must use persistent rate limiting');
 assert.match(api, /Too many attempts\. Wait 15 minutes/, 'admin authentication must return a rate-limit response');
-assert.match(api, /PLEDGE_CRON_SECRET/, 'scheduled profit endpoint must be secret protected');
+assert.match(api, /jwtVerify\(token, GITHUB_ACTIONS_JWKS/, 'scheduled profit endpoint must validate GitHub OIDC tokens');
+assert.match(api, /payload\.workflow_ref === "Ubnlord\/Pledge-Invest\/\.github\/workflows\/daily-investor-profit\.yml@refs\/heads\/main"/, 'only the main-branch scheduler workflow may trigger profit accrual');
 assert.match(scheduler, /cron: "0 23 \* \* \*"/, 'daily scheduler must run at midnight Africa/Lagos time');
-assert.match(scheduler, /secrets\.PLEDGE_CRON_SECRET/, 'scheduler must use a GitHub Actions secret, not a committed credential');
+assert.match(scheduler, /id-token: write/, 'scheduler must have permission to request an OIDC token');
+assert.match(scheduler, /core\.getIDToken\("pledge-investor-profit-scheduler"\)/, 'scheduler must request the expected OIDC audience');
+assert.doesNotMatch(scheduler, /PLEDGE_CRON_SECRET/, 'scheduler must not depend on an unconfigured shared secret');
 assert.match(planSync, /\('starter', 'Capital Preservation Plan'/, 'plan sync must preserve the existing starter plan ID');
 assert.match(planSync, /\('growth', 'Fixed Income Plan'/, 'plan sync must preserve the existing growth plan ID');
 assert.match(planSync, /\('premium', 'Balanced Portfolio'/, 'plan sync must preserve the existing premium plan ID');
