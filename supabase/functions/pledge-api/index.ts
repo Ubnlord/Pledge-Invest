@@ -12,7 +12,7 @@ async function isTrustedProfitScheduler(request: Request) {
   try {
     const { payload } = await jwtVerify(token, GITHUB_ACTIONS_JWKS, {
       issuer: "https://token.actions.githubusercontent.com",
-      audience: "pledge-invest-scheduler",
+      audience: "pledge-investor-profit-scheduler",
     });
     return payload.repository === "Ubnlord/Pledge-Invest"
       && payload.ref === "refs/heads/main"
