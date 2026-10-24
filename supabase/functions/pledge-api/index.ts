@@ -140,10 +140,16 @@ export const handler=router({
   items=(Array.isArray(payload?.data)?payload.data:[]).map((c:any)=>({id:String(c.id||''),symbol:String(c.symbol||'').toUpperCase(),name:String(c.name||''),image:'',price:Number(c.priceUsd||0),change24h:Number(c.changePercent24Hr||0),marketCap:Number(c.marketCapUsd||0),volume24h:Number(c.volumeUsd24Hr||0),high24h:0,low24h:0,rank:Number(c.rank||0)})).filter((c:any)=>c.symbol&&Number.isFinite(c.price));
  }
  if(!items.length)throw new Error('No market data returned');
+ // Keep only valid, ranked market records so provider anomalies cannot dominate the movers lists.
+ items=items.filter((x:any)=>x.symbol&&x.name&&Number.isFinite(x.price)&&x.price>0&&Number.isFinite(x.change24h)&&Number.isFinite(x.marketCap)&&x.marketCap>0);
+ items.sort((a:any,b:any)=>(a.rank||Number.MAX_SAFE_INTEGER)-(b.rank||Number.MAX_SAFE_INTEGER));
  const depositSymbols=['BTC','ETH','TRX'];
  const depositable=items.filter((x:any)=>depositSymbols.includes(x.symbol));
- const gainers=[...items].filter((x:any)=>x.change24h>0).sort((a:any,b:any)=>b.change24h-a.change24h).slice(0,5);
- const losers=[...items].filter((x:any)=>x.change24h<0).sort((a:any,b:any)=>a.change24h-b.change24h).slice(0,5);
+ // Movers are selected from established, liquid assets only; exclude stablecoins and tiny-cap anomalies.
+ const stableSymbols=new Set(['USDT','USDC','DAI','FDUSD','TUSD','USDE','USDS','USDD','PYUSD','USDP','USDY','FRAX','LUSD','GUSD','EURC']);
+ const moverPool=items.filter((x:any)=>(x.marketCap>=100000000||x.rank<=50)&&!stableSymbols.has(x.symbol)&&x.volume24h>=10000000);
+ const gainers=[...moverPool].filter((x:any)=>x.change24h>0).sort((a:any,b:any)=>b.change24h-a.change24h).slice(0,4);
+ const losers=[...moverPool].filter((x:any)=>x.change24h<0).sort((a:any,b:any)=>a.change24h-b.change24h).slice(0,4);
  return new Response(JSON.stringify({items,depositable,gainers,losers,updatedAt:Date.now(),source:items.some((x:any)=>x.image)?'CoinGecko':'CoinCap'}),{status:200,headers:{'Content-Type':'application/json','Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'authorization, x-client-info, apikey, content-type','Access-Control-Allow-Methods':'GET, POST, PUT, DELETE, OPTIONS','Cache-Control':'no-store, max-age=0'}});
  }catch{return json({error:'Live market providers are temporarily unavailable. Please refresh shortly.'},502);}}],
 
