@@ -65,7 +65,7 @@ export default function Profile({
       .get('/api/profile')
       .then((r) => {
         if (cancelled) return;
-        const v = { ...emptyProfile(account, user), ...r.data };
+        const v = { ...emptyProfile(account, user), ...r.data, preferredCurrency: 'USD' };
         setP(v);
         setSaved(v);
       })
