@@ -27,3 +27,7 @@ Before enabling daily accrual, verify the configured daily rate and `dailyProfit
 - A unique index prevents the same transaction hash from being submitted more than once on the same network.
 - Admins must independently verify the transaction, network, amount, and destination before approving a deposit.
 - A rejected duplicate should be reviewed through the existing request; do not create another credit for the same blockchain transaction.
+
+## Authentication hardening
+
+The Supabase security advisor currently reports leaked-password protection as disabled. Enable it in Supabase Dashboard → Authentication → Settings / Password Security (the exact label can vary) so compromised passwords are rejected. This is a project Auth setting, not a repository change. The mirror-trigger function's direct RPC privileges have been revoked; its trigger continues to run with the required service role privileges.
