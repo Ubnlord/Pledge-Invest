@@ -129,8 +129,6 @@ const dictionaries: Record<string, Dictionary> = {
 };
 
 const dictionariesWithEnglish: Record<string, Dictionary> = dictionaries;
-const reverseLookup = (dict: Dictionary, value: string) =>
-  Object.keys(dict).find(key => dict[key] === value);
 
 export default function LanguageTranslator({ dark = false }: { dark?: boolean }) {
   const [language, setLanguage] = useState('en');
@@ -152,7 +150,7 @@ export default function LanguageTranslator({ dark = false }: { dark?: boolean })
       originals.set(node, original);
       const trimmed = original.trim();
       if (!trimmed) return;
-      const translated = dict[trimmed] || reverseLookup(dict, trimmed) || trimmed;
+      const translated = dict[trimmed] || trimmed;
       if (node.data !== original.replace(trimmed, translated)) {
         node.data = original.replace(trimmed, translated);
       }
@@ -161,7 +159,7 @@ export default function LanguageTranslator({ dark = false }: { dark?: boolean })
       for (const attr of ['placeholder', 'aria-label', 'title']) {
         const value = element.getAttribute(attr);
         if (!value) continue;
-        const translated = dict[value] || reverseLookup(dict, value);
+        const translated = dict[value];
         if (translated && translated !== value) element.setAttribute(attr, translated);
       }
     };
@@ -189,8 +187,9 @@ export default function LanguageTranslator({ dark = false }: { dark?: boolean })
   }, [language]);
 
   const changeLanguage = (code: string) => {
-    setLanguage(code);
     try { localStorage.setItem('pledge-site-language', code); } catch {}
+    setLanguage(code);
+    window.location.reload();
   };
 
   return <div className="relative flex items-center gap-2">
