@@ -55,7 +55,9 @@ assert.match(api, /pledge_admin_auth_attempt/, 'admin authentication must use pe
 assert.match(api, /Too many attempts\. Wait 15 minutes/, 'admin authentication must return a rate-limit response');
 assert.match(api, /jwtVerify\(token, GITHUB_ACTIONS_JWKS/, 'scheduled profit endpoint must validate GitHub OIDC tokens');
 assert.match(api, /audience: "pledge-investor-profit-scheduler"/, 'server must validate the same OIDC audience requested by GitHub Actions');
-assert.match(api, /payload\.workflow_ref === "Ubnlord\/Pledge-Invest\/\.github\/workflows\/daily-investor-profit\.yml@refs\/heads\/main"/, 'only the main-branch scheduler workflow may trigger profit accrual');
+assert.match(api, /payload\.workflow_ref === expectedWorkflowRef/, 'OIDC verifier must compare the exact allowed workflow reference');
+assert.match(api, /expected='Ubnlord\/Pledge-Invest\/\.github\/workflows\/daily-investor-profit\.yml@refs\/heads\/main'/, 'profit endpoint must allow only the daily scheduler workflow');
+assert.match(api, /expected='Ubnlord\/Pledge-Invest\/\.github\/workflows\/validate\.yml@refs\/heads\/main'/, 'verification endpoint must allow only the main-branch validation workflow');
 assert.match(scheduler, /cron: "0 23 \* \* \*"/, 'daily scheduler must run at midnight Africa/Lagos time');
 assert.match(scheduler, /id-token: write/, 'scheduler must have permission to request an OIDC token');
 assert.match(scheduler, /core\.getIDToken\("pledge-investor-profit-scheduler"\)/, 'scheduler must request the expected OIDC audience');
