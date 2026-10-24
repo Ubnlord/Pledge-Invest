@@ -10,6 +10,7 @@ assert.match(api, /async listAll<T = any>\(table: string, pageSize = 1000\)/, 'A
 assert.match(api, /POST \/api\/admin\/notifications'.*listAll<any>\('pledge_investors'\)/s, 'broadcast notifications must include all investor pages');
 assert.match(api, /GET \/api\/admin\/withdrawals[\s\S]*?listAll<any>\('pledge_investors'\)[\s\S]*?listAll<any>/, 'withdrawal review must not silently cap investors or transactions');
 assert.match(api, /GET \/api\/admin\/deposits'.*listAll\('pledge_deposit_requests'\)/s, 'deposit review must include all pages');
+assert.match(api, /GET \/api\/admin\/overview'.*listAll<any>\(`pledge_transactions_\$\{x\.user_id\}`\)/s, 'overview must count transactions from per-investor ledgers');
 assert.match(api, /timeZone:'Africa\/Lagos'/, 'daily profit idempotency date must use Lagos time');
 assert.match(api, /daily-profit-'\+day\+'-'/, 'daily profit must use a per-user, per-day idempotency key');
 assert.match(api, /'DELETE \/api\/admin\/users\/:id'.*status:'inactive'/s, 'admin delete action must suspend, not erase, investor records');
